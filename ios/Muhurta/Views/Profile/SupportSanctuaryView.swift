@@ -85,7 +85,7 @@ public struct SupportSanctuaryView: View {
         ),
         DakshinaTier(
             id: "com.shindeaditya.Muhurta.tip.benefactor",
-            emoji: "🏛️",
+            emoji: "🛕",
             title: "Temple Benefactor",
             sanskritTitle: "महा संरक्षक",
             priceString: "$99.99",
@@ -224,7 +224,7 @@ public struct SupportSanctuaryView: View {
             } label: {
                 HStack {
                     Image(systemName: "arrow.up.right.square.fill")
-                    Text("github.com/heyshinde/Muhurta")
+                    Text(" GitHub Muhurta")
                         .font(.system(size: 12.5, weight: .bold, design: .monospaced))
                     Spacer()
                     Image(systemName: "star.fill")

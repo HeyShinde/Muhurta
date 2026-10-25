@@ -22,14 +22,13 @@ struct VedicProfileSettingsView: View {
     @State private var showingAccountModal = false
     @State private var showingGuideModal = false
     @State private var showingSupportModal = false
+    @State private var showingAllMilestones = false
     @State private var eventToEdit: UserLifeEvent? = nil
     @State private var eventToDelete: UserLifeEvent? = nil
     @State private var showingDeleteConfirmation = false
     
-    // Tap-to-reveal Roman state
-    @State private var temporaryRevealedId: String? = nil
-    @State private var countdownSeconds: Double = 3.5
-    @State private var countdownTask: Task<Void, Never>? = nil
+    // Expanded cards state
+    @State private var expandedEventIds: Set<String> = []
     
     private let gold = Color(red: 0.94, green: 0.76, blue: 0.42)
     
@@ -49,21 +48,42 @@ struct VedicProfileSettingsView: View {
                         // Spiritual Identity Card (Gotra, Nakshatra, Rashi, Ishta Devata)
                         SpiritualIdentityCard()
                         
-                        // Life Milestones Section Header
+                        // Sacred Milestones Section Header
                         milestonesHeader
                         
-                        // Upcoming Celebration Hero
-                        if let closest = closestUpcomingEvent() {
-                            upcomingHeroBanner(for: closest)
-                        }
-                        
-                        // Milestone Cards List
-                        if lifeEventManager.events.isEmpty {
+                        // Clean, Chronologically Ordered Milestone Cards (Top 3 on Profile, Scalable for 50+)
+                        if sortedEvents.isEmpty {
                             emptyMilestonesCard
                         } else {
                             VStack(spacing: 12) {
-                                ForEach(lifeEventManager.events) { event in
-                                    milestoneInteractiveCard(event: event)
+                                ForEach(sortedEvents.prefix(3)) { event in
+                                    milestoneCard(event: event, isNextUpcoming: event.id == sortedEvents.first?.id)
+                                }
+                                
+                                if sortedEvents.count > 3 {
+                                    Button {
+                                        showingAllMilestones = true
+                                    } label: {
+                                        HStack(spacing: 8) {
+                                            Image(systemName: "calendar")
+                                                .foregroundColor(gold)
+                                            Text("View All Sacred Milestones (\(sortedEvents.count))")
+                                                .font(.system(size: 13, weight: .semibold))
+                                                .foregroundColor(.white)
+                                            Spacer()
+                                            Image(systemName: "chevron.right")
+                                                .font(.system(size: 11, weight: .bold))
+                                                .foregroundColor(gold.opacity(0.8))
+                                        }
+                                        .padding(14)
+                                        .background(Color.white.opacity(0.04))
+                                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                                .stroke(gold.opacity(0.25), lineWidth: 1)
+                                        )
+                                    }
+                                    .buttonStyle(.plain)
                                 }
                             }
                         }
@@ -104,6 +124,9 @@ struct VedicProfileSettingsView: View {
             }
             .sheet(isPresented: $showingSupportModal) {
                 SupportSanctuaryView()
+            }
+            .sheet(isPresented: $showingAllMilestones) {
+                AllSacredMilestonesView()
             }
             .alert("Delete Milestone?", isPresented: $showingDeleteConfirmation, presenting: eventToDelete) { event in
                 Button("Delete", role: .destructive) {
@@ -203,261 +226,276 @@ struct VedicProfileSettingsView: View {
     // MARK: - 2. Milestones Header
     
     private var milestonesHeader: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("VEDIC MILESTONES (जन्म-संस्कार)")
-                    .font(.system(size: 11, weight: .bold, design: .rounded))
-                    .foregroundColor(gold)
-                Text("Annual Solar-Lunar Tithi Recurrences")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.white.opacity(0.85))
+        HStack(alignment: .center) {
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 6) {
+                    Text("ॐ")
+                        .font(.system(size: 13, weight: .bold, design: .serif))
+                        .foregroundColor(gold)
+                    Text("जन्म-संस्कार")
+                        .font(.system(size: 10.5, weight: .bold, design: .rounded))
+                        .tracking(1.3)
+                        .foregroundColor(gold)
+                }
+                Text("Annual Tithi Celebrations")
+                    .font(.system(size: 13.5, weight: .semibold))
+                    .foregroundColor(.white.opacity(0.9))
             }
             
             Spacer()
             
-            Button {
-                if authService.isAuthenticated {
-                    showingAddMilestone = true
-                } else {
-                    showingAuthModal = true
+            HStack(spacing: 8) {
+                if sortedEvents.count > 3 {
+                    Button {
+                        showingAllMilestones = true
+                    } label: {
+                        Text("All (\(sortedEvents.count))")
+                            .font(.system(size: 11.5, weight: .semibold))
+                            .foregroundColor(gold)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(gold.opacity(0.12))
+                            .clipShape(Capsule())
+                            .overlay(Capsule().stroke(gold.opacity(0.3), lineWidth: 1))
+                    }
                 }
-            } label: {
-                HStack(spacing: 5) {
-                    Image(systemName: "plus.circle.fill")
-                    Text("Add Date")
+                
+                Button {
+                    if authService.isAuthenticated {
+                        showingAddMilestone = true
+                    } else {
+                        showingAuthModal = true
+                    }
+                } label: {
+                    HStack(spacing: 5) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 11, weight: .bold))
+                        Text("Add Date")
+                            .font(.system(size: 12, weight: .bold, design: .rounded))
+                    }
+                    .foregroundColor(.black)
+                    .padding(.horizontal, 13)
+                    .padding(.vertical, 7)
+                    .background(gold)
+                    .clipShape(Capsule())
+                    .shadow(color: gold.opacity(0.25), radius: 6, y: 2)
                 }
-                .font(.system(size: 12, weight: .bold, design: .rounded))
-                .foregroundColor(.black)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 7)
-                .background(gold)
-                .clipShape(Capsule())
-                .shadow(color: gold.opacity(0.25), radius: 8, y: 3)
             }
         }
         .padding(.horizontal, 2)
     }
     
-    // MARK: - 3. Upcoming Hero Banner
+    // MARK: - 3. Clean Milestone Card
     
-    private func upcomingHeroBanner(for item: (event: UserLifeEvent, recurrence: (date: Date, daysRemaining: Int, isToday: Bool, celebrationYear: Int))) -> some View {
-        let event = item.event
-        let rec = item.recurrence
-        
-        return VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                HStack(spacing: 6) {
-                    Image(systemName: "sparkles")
-                        .foregroundColor(gold)
-                    Text(rec.isToday ? "CELEBRATING TODAY! • अद्योत्सवः" : "NEXT UPCOMING VEDIC CELEBRATION")
-                        .font(.system(size: 10, weight: .bold, design: .rounded))
-                        .foregroundColor(gold)
-                }
-                
-                Spacer()
-                
-                Text(rec.isToday ? "TODAY" : "in \(rec.daysRemaining) days")
-                    .font(.system(size: 11, weight: .bold, design: .monospaced))
-                    .foregroundColor(.black)
-                    .padding(.horizontal, 9)
-                    .padding(.vertical, 4)
-                    .background(gold)
-                    .clipShape(Capsule())
-            }
-            
-            VStack(alignment: .leading, spacing: 3) {
-                Text(event.title)
-                    .font(.system(size: 18, weight: .bold, design: .serif))
-                    .foregroundColor(.white)
-                
-                Text("\(event.personName) • \(event.vedicMasaName) \(event.vedicPaksha) \(event.vedicTithiName)")
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(gold.opacity(0.9))
-                
-                Text("Vedic Year \(rec.celebrationYear) • \(formattedDate(rec.date))")
-                    .font(.system(size: 12))
-                    .foregroundColor(.white.opacity(0.6))
-            }
-            
-            Text(event.type.blessingGreeting)
-                .font(.system(size: 12, design: .serif))
-                .italic()
-                .foregroundColor(.white.opacity(0.8))
-                .padding(10)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.white.opacity(0.04))
-                .cornerRadius(10)
+    private var sortedEvents: [UserLifeEvent] {
+        lifeEventManager.events.sorted {
+            lifeEventManager.nextRecurrence(for: $0).daysRemaining < lifeEventManager.nextRecurrence(for: $1).daysRemaining
         }
-        .padding(16)
-        .background(
-            ZStack {
-                RoundedRectangle(cornerRadius: 18)
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color(red: 0.16, green: 0.13, blue: 0.08),
-                                Color(red: 0.08, green: 0.09, blue: 0.13)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                RoundedRectangle(cornerRadius: 18)
-                    .stroke(gold.opacity(0.3), lineWidth: 1)
-            }
-        )
     }
     
-    // MARK: - 4. Milestone Interactive Card (Tap to reveal Roman date)
-    
-    private func milestoneInteractiveCard(event: UserLifeEvent) -> some View {
-        let isRevealed = (temporaryRevealedId == event.id)
+    private func milestoneCard(event: UserLifeEvent, isNextUpcoming: Bool) -> some View {
         let recurrence = lifeEventManager.nextRecurrence(for: event)
+        let isExpanded = expandedEventIds.contains(event.id)
         
         return VStack(alignment: .leading, spacing: 10) {
-            // Header Row: Type, Title, Person, and Options Menu
-            HStack {
+            // Next celebration spotlight badge (only on the closest upcoming event)
+            if isNextUpcoming {
                 HStack(spacing: 6) {
-                    Image(systemName: event.type.iconName)
-                        .foregroundColor(event.type.tintColor)
-                    Text(event.title)
-                        .font(.system(size: 14, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(gold)
+                    Text(recurrence.isToday ? "CELEBRATING TODAY!" : "NEXT UPCOMING CELEBRATION")
+                        .font(.system(size: 10, weight: .bold, design: .rounded))
+                        .tracking(1.0)
+                        .foregroundColor(gold)
+                    
+                    Spacer()
+                    
+                    Text(recurrence.isToday ? "TODAY" : "in \(recurrence.daysRemaining) days")
+                        .font(.system(size: 10, weight: .bold, design: .monospaced))
+                        .foregroundColor(.black)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(gold)
+                        .clipShape(Capsule())
                 }
+                .padding(.bottom, 2)
+            }
+            
+            // Main card row: Date badge on left + Details on right
+            HStack(alignment: .top, spacing: 14) {
+                // Sacred Date Badge Tile
+                VStack(spacing: 2) {
+                    Text(monthAbbrev(recurrence.date))
+                        .font(.system(size: 11, weight: .bold, design: .rounded))
+                        .tracking(0.8)
+                        .foregroundColor(isNextUpcoming ? gold : .white.opacity(0.8))
+                    
+                    Text(dayNumber(recurrence.date))
+                        .font(.system(size: 22, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+                    
+                    Text(yearNumber(recurrence.date))
+                        .font(.system(size: 10, weight: .medium, design: .monospaced))
+                        .foregroundColor(.white.opacity(0.55))
+                }
+                .frame(width: 58, height: 68)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(isNextUpcoming ? gold.opacity(0.14) : Color.white.opacity(0.04))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .stroke(isNextUpcoming ? gold.opacity(0.35) : Color.white.opacity(0.08), lineWidth: 1)
+                        )
+                )
                 
-                Spacer()
-                
-                Text(event.personName)
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.white.opacity(0.6))
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 3)
-                    .background(Color.white.opacity(0.06))
-                    .clipShape(Capsule())
-                
-                // Visible Options Dropdown Menu for Edit & Delete
-                Menu {
-                    Button {
-                        eventToEdit = event
-                    } label: {
-                        Label("Edit Milestone", systemImage: "pencil")
+                // Content Information
+                VStack(alignment: .leading, spacing: 5) {
+                    // Header Row: Type icon + Title + Person pill + Context Menu
+                    HStack(alignment: .center, spacing: 6) {
+                        Image(systemName: event.type.iconName)
+                            .font(.system(size: 13))
+                            .foregroundColor(event.type.tintColor)
+                        
+                        Text(event.title)
+                            .font(.system(size: 15, weight: .bold, design: .serif))
+                            .foregroundColor(.white)
+                            .lineLimit(1)
+                        
+                        Spacer()
+                        
+                        if !event.personName.isEmpty {
+                            Text(event.personName)
+                                .font(.system(size: 10.5, weight: .semibold))
+                                .foregroundColor(.white.opacity(0.75))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 3)
+                                .background(Color.white.opacity(0.06))
+                                .clipShape(Capsule())
+                        }
+                        
+                        if !isNextUpcoming {
+                            Text("in \(recurrence.daysRemaining)d")
+                                .font(.system(size: 10, weight: .medium, design: .monospaced))
+                                .foregroundColor(gold.opacity(0.9))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2.5)
+                                .background(gold.opacity(0.12))
+                                .clipShape(Capsule())
+                        }
+                        
+                        Menu {
+                            Button {
+                                eventToEdit = event
+                            } label: {
+                                Label("Edit Milestone", systemImage: "pencil")
+                            }
+                            
+                            Button(role: .destructive) {
+                                eventToDelete = event
+                                showingDeleteConfirmation = true
+                            } label: {
+                                Label("Delete Milestone", systemImage: "trash")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(.white.opacity(0.65))
+                                .frame(width: 26, height: 26)
+                                .background(Color.white.opacity(0.05))
+                                .clipShape(Circle())
+                        }
                     }
                     
-                    Button(role: .destructive) {
-                        eventToDelete = event
-                        showingDeleteConfirmation = true
-                    } label: {
-                        Label("Delete Milestone", systemImage: "trash")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(.white.opacity(0.65))
-                        .frame(width: 28, height: 28)
-                        .background(Color.white.opacity(0.06))
-                        .clipShape(Circle())
-                }
-            }
-            
-            // Display Area: Tap to reveal Roman date temporarily
-            Button {
-                revealRomanDate(for: event.id)
-            } label: {
-                ZStack {
-                    if isRevealed {
-                        VStack(alignment: .leading, spacing: 5) {
-                            HStack {
-                                Image(systemName: "calendar")
-                                    .foregroundColor(Color.cyan)
-                                Text("ROMAN / GREGORIAN DATE")
-                                    .font(.system(size: 10, weight: .bold, design: .rounded))
-                                    .foregroundColor(Color.cyan)
-                                Spacer()
-                                Text("Reverting in \(String(format: "%.1f", max(0, countdownSeconds)))s")
-                                    .font(.system(size: 10, weight: .bold, design: .monospaced))
-                                    .foregroundColor(Color.cyan.opacity(0.8))
-                            }
-                            
-                            Text(event.formattedRomanDate)
-                                .font(.system(size: 17, weight: .bold, design: .rounded))
-                                .foregroundColor(.white)
-                            
-                            GeometryReader { geo in
-                                ZStack(alignment: .leading) {
-                                    Capsule().fill(Color.white.opacity(0.15))
-                                    let progress = CGFloat(max(0.0, min(1.0, countdownSeconds / 3.5)))
-                                    Capsule().fill(Color.cyan)
-                                        .frame(width: max(0, min(geo.size.width, geo.size.width * progress)))
-                                }
-                            }
-                            .frame(height: 3)
-                        }
-                        .padding(12)
-                        .background(Color.cyan.opacity(0.12))
-                        .cornerRadius(12)
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.cyan.opacity(0.4), lineWidth: 1))
-                    } else {
-                        VStack(alignment: .leading, spacing: 5) {
-                            HStack {
-                                Image(systemName: "sun.max.fill")
-                                    .foregroundColor(gold)
-                                Text("VEDIC CALENDAR")
-                                    .font(.system(size: 10, weight: .bold, design: .rounded))
-                                    .foregroundColor(gold)
-                                Spacer()
-                                Text("Vedic Year \(event.vedicYear)")
-                                    .font(.system(size: 10, weight: .bold, design: .monospaced))
-                                    .foregroundColor(.white.opacity(0.7))
-                            }
-                            
-                            Text("\(event.vedicMasaName) • \(event.vedicPaksha) \(event.vedicTithiName)")
-                                .font(.system(size: 15, weight: .bold, design: .serif))
-                                .foregroundColor(.white)
-                            
-                            HStack {
-                                Text("Nakshatra: \(event.vedicNakshatra)")
-                                    .font(.system(size: 11))
-                                    .foregroundColor(.white.opacity(0.6))
-                                Spacer()
-                                Text("Tap to view Roman date ⏱️")
-                                    .font(.system(size: 10, weight: .medium))
-                                    .foregroundColor(gold.opacity(0.85))
-                            }
-                        }
-                        .padding(12)
-                        .background(Color.white.opacity(0.04))
-                        .cornerRadius(12)
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.white.opacity(0.08), lineWidth: 1))
+                    // Clean Vedic Tithi line
+                    Text(cleanVedicTitle(masa: event.vedicMasaName, paksha: event.vedicPaksha, tithi: event.vedicTithiName))
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(gold.opacity(0.95))
+                    
+                    // Metadata: Nakshatra and Born Gregorian Reference
+                    HStack(spacing: 5) {
+                        Text("Nakshatra: \(cleanWord(event.vedicNakshatra))")
+                            .font(.system(size: 11))
+                            .foregroundColor(.white.opacity(0.65))
+                        
+                        Text("•")
+                            .font(.system(size: 8))
+                            .foregroundColor(.white.opacity(0.3))
+                        
+                        Text("Born: \(formattedDate(event.originalDate))")
+                            .font(.system(size: 11))
+                            .foregroundColor(.white.opacity(0.5))
                     }
                 }
             }
-            .buttonStyle(.plain)
             
-            // Recurrence in current Vedic Year (5128)
-            HStack {
-                HStack(spacing: 5) {
-                    Image(systemName: "repeat")
-                        .font(.system(size: 11))
-                        .foregroundColor(gold)
-                    Text("Current Year Recurrence:")
-                        .font(.system(size: 11))
-                        .foregroundColor(.white.opacity(0.65))
+            // Expandable Blessing & Vedic Year Details
+            if isExpanded {
+                VStack(alignment: .leading, spacing: 6) {
+                    Divider().background(Color.white.opacity(0.08))
+                    
+                    HStack {
+                        Text("SACRED VEDIC RECURRENCE • YEAR \(recurrence.celebrationYear)")
+                            .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+                            .foregroundColor(gold)
+                        Spacer()
+                        Text("Tap to collapse")
+                            .font(.system(size: 9))
+                            .foregroundColor(.white.opacity(0.4))
+                    }
+                    
+                    Text(event.type.blessingGreeting)
+                        .font(.system(size: 11.5, design: .serif))
+                        .italic()
+                        .foregroundColor(.white.opacity(0.85))
+                        .lineSpacing(2)
+                        .padding(10)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color.white.opacity(0.03))
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                 }
-                Spacer()
-                Text("\(formattedDate(recurrence.date)) (\(recurrence.daysRemaining == 0 ? "Today" : "in \(recurrence.daysRemaining)d"))")
-                    .font(.system(size: 11, weight: .bold, design: .rounded))
-                    .foregroundColor(gold)
+                .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
-        .padding(15)
+        .padding(14)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color(red: 0.08, green: 0.09, blue: 0.13))
+                .fill(
+                    isNextUpcoming
+                    ? LinearGradient(
+                        colors: [
+                            Color(red: 0.13, green: 0.11, blue: 0.08),
+                            Color(red: 0.08, green: 0.09, blue: 0.13)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                    : LinearGradient(
+                        colors: [
+                            Color(red: 0.08, green: 0.09, blue: 0.13),
+                            Color(red: 0.07, green: 0.08, blue: 0.11)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
-                        .stroke(isRevealed ? Color.cyan.opacity(0.5) : Color.white.opacity(0.08), lineWidth: 1)
+                        .stroke(isNextUpcoming ? gold.opacity(0.4) : Color.white.opacity(0.08), lineWidth: 1)
                 )
         )
+        .contentShape(Rectangle())
+        .onTapGesture {
+            let impact = UIImpactFeedbackGenerator(style: .light)
+            impact.impactOccurred()
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                if expandedEventIds.contains(event.id) {
+                    expandedEventIds.remove(event.id)
+                } else {
+                    expandedEventIds.insert(event.id)
+                }
+            }
+        }
         .contextMenu {
             Button {
                 eventToEdit = event
@@ -474,26 +512,44 @@ struct VedicProfileSettingsView: View {
         }
     }
     
-    private func revealRomanDate(for eventId: String) {
-        countdownTask?.cancel()
-        let impact = UIImpactFeedbackGenerator(style: .light)
-        impact.impactOccurred()
-        
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            temporaryRevealedId = eventId
-            countdownSeconds = 3.5
+    // MARK: - Formatters & Cleaners
+    
+    private func cleanWord(_ str: String) -> String {
+        str.components(separatedBy: "(").first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? str
+    }
+    
+    private func cleanPaksha(_ paksha: String) -> String {
+        let lower = paksha.lowercased()
+        if lower.contains("sukla") || lower.contains("śukla") || lower.contains("waxing") {
+            return "Śukla"
+        } else {
+            return "Kṛṣṇa"
         }
-        
-        countdownTask = Task { @MainActor in
-            while countdownSeconds > 0.05 {
-                try? await Task.sleep(nanoseconds: 100_000_000)
-                if Task.isCancelled { return }
-                countdownSeconds -= 0.1
-            }
-            withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                temporaryRevealedId = nil
-            }
-        }
+    }
+    
+    private func cleanVedicTitle(masa: String, paksha: String, tithi: String) -> String {
+        let m = cleanWord(masa)
+        let p = cleanPaksha(paksha)
+        let t = cleanWord(tithi)
+        return "\(m) \(p) \(t)"
+    }
+    
+    private func monthAbbrev(_ date: Date) -> String {
+        let f = DateFormatter()
+        f.dateFormat = "MMM"
+        return f.string(from: date).uppercased()
+    }
+    
+    private func dayNumber(_ date: Date) -> String {
+        let f = DateFormatter()
+        f.dateFormat = "d"
+        return f.string(from: date)
+    }
+    
+    private func yearNumber(_ date: Date) -> String {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy"
+        return f.string(from: date)
     }
     
     // MARK: - 5. Calendar System Preferences
@@ -1020,7 +1076,7 @@ struct AccountManagementSheet: View {
                                     .font(.system(size: 13))
                                     .foregroundColor(.white.opacity(0.7))
                                 Spacer()
-                                Text(authService.isAnonymous ? "Guest Session" : "Google / Firebase")
+                                Text(authService.isAnonymous ? "Guest Session" : "Google")
                                     .font(.system(size: 13, weight: .medium))
                                     .foregroundColor(.white)
                             }

@@ -86,6 +86,9 @@ public struct SolarDashboardView: View {
                             selectedDateScheduleHeroCard(snapshot: snapshot, panchanga: currentPanchanga)
                         }
                         
+                        // Solar Agni & Sacred Meal Chronobiology Card
+                        solarAgniMealTimingCard(snapshot: snapshot)
+                        
                         // Daily Windows of Action (Rahu Kalam, Yamaganda, Gulika, Abhijit)
                         if let panchanga = currentPanchanga {
                             dailyActionWindowsCard(panchanga: panchanga)
@@ -862,9 +865,177 @@ public struct SolarDashboardView: View {
         )
     }
     
-    // MARK: - Evening Sandhya Card
+    // MARK: - Solar Agni & Meal Chronobiology Card
+    
+    private func solarAgniMealTimingCard(snapshot: MuhurtaSnapshot) -> some View {
+        let gold = Color(red: 0.94, green: 0.76, blue: 0.42)
+        let solarNoon = snapshot.solarTimes.solarNoon
+        let sunset = snapshot.solarTimes.sunset
+        let now = calculationTargetDate
+        
+        // Madhyāhna Window (Primary Meal • Peak Solar Fire)
+        let madhyahnaStart = solarNoon.addingTimeInterval(-45 * 60)
+        let madhyahnaEnd = solarNoon.addingTimeInterval(60 * 60)
+        let isMadhyahnaActive = isSelectedDateToday && (now >= madhyahnaStart && now <= madhyahnaEnd)
+        
+        // Sāyam Window (Evening Meal • Before Sunset)
+        let sayamStart = sunset.addingTimeInterval(-90 * 60)
+        let sayamEnd = sunset
+        let isSayamActive = isSelectedDateToday && (now >= sayamStart && now <= sayamEnd)
+        
+        let f = DateFormatter()
+        f.dateFormat = "h:mm a"
+        
+        return VStack(alignment: .leading, spacing: 14) {
+            // Header
+            HStack {
+                HStack(spacing: 7) {
+                    Text("🔥")
+                        .font(.system(size: 14))
+                    Text("SŪRYA AGNI & MEAL TIMINGS (आहार काल)")
+                        .font(.system(size: 10.5, weight: .bold, design: .rounded))
+                        .tracking(1.3)
+                        .foregroundColor(gold)
+                }
+                Spacer()
+                Text("Dvikāla Bhojanam")
+                    .font(.system(size: 10, weight: .bold, design: .serif))
+                    .foregroundColor(.white.opacity(0.75))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Color.white.opacity(0.06))
+                    .clipShape(Capsule())
+            }
+            
+            Text("Vedas and classical Āyurveda prescribe two primary meals aligned to solar intensity. When Sūrya reaches maximum zenith, internal digestive fire (Jāṭharāgni) is strongest.")
+                .font(.system(size: 11.5))
+                .foregroundColor(.white.opacity(0.7))
+                .lineSpacing(2)
+            
+            // 2 Meal Timing Blocks
+            VStack(spacing: 10) {
+                // 1. Primary Meal (Madhyāhna)
+                HStack(spacing: 12) {
+                    ZStack {
+                        Circle()
+                            .fill(Color(red: 1.0, green: 0.55, blue: 0.2).opacity(0.18))
+                            .frame(width: 44, height: 44)
+                        Image(systemName: "sun.max.fill")
+                            .font(.system(size: 20))
+                            .foregroundColor(Color(red: 1.0, green: 0.65, blue: 0.25))
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 3) {
+                        HStack {
+                            Text("Primary Meal (Madhyāhna)")
+                                .font(.system(size: 13.5, weight: .bold, design: .serif))
+                                .foregroundColor(.white)
+                            Spacer()
+                            if isMadhyahnaActive {
+                                HStack(spacing: 4) {
+                                    Circle().fill(Color.orange).frame(width: 5, height: 5)
+                                    Text("ACTIVE PEAK")
+                                        .font(.system(size: 9, weight: .heavy, design: .monospaced))
+                                        .foregroundColor(Color.orange)
+                                }
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2.5)
+                                .background(Color.orange.opacity(0.15))
+                                .clipShape(Capsule())
+                            }
+                        }
+                        
+                        Text("\(f.string(from: madhyahnaStart)) – \(f.string(from: madhyahnaEnd)) • Peak Solar Agni")
+                            .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                            .foregroundColor(gold)
+                        
+                        Text("Heaviest, most wholesome meal. Optimal protein, grains & vitality synthesis.")
+                            .font(.system(size: 11))
+                            .foregroundColor(.white.opacity(0.6))
+                    }
+                }
+                .padding(12)
+                .background(Color.white.opacity(0.03))
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke(isMadhyahnaActive ? Color.orange.opacity(0.5) : Color.white.opacity(0.06), lineWidth: 1)
+                )
+                
+                // 2. Evening Light Meal (Sāyam)
+                HStack(spacing: 12) {
+                    ZStack {
+                        Circle()
+                            .fill(Color(red: 0.94, green: 0.45, blue: 0.45).opacity(0.18))
+                            .frame(width: 44, height: 44)
+                        Image(systemName: "sunset.fill")
+                            .font(.system(size: 19))
+                            .foregroundColor(Color(red: 0.95, green: 0.55, blue: 0.45))
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 3) {
+                        HStack {
+                            Text("Sunset Light Meal (Sāyam)")
+                                .font(.system(size: 13.5, weight: .bold, design: .serif))
+                                .foregroundColor(.white)
+                            Spacer()
+                            if isSayamActive {
+                                HStack(spacing: 4) {
+                                    Circle().fill(gold).frame(width: 5, height: 5)
+                                    Text("ACTIVE")
+                                        .font(.system(size: 9, weight: .heavy, design: .monospaced))
+                                        .foregroundColor(gold)
+                                }
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2.5)
+                                .background(gold.opacity(0.15))
+                                .clipShape(Capsule())
+                            }
+                        }
+                        
+                        Text("\(f.string(from: sayamStart)) – \(f.string(from: sayamEnd)) • Pre-Twilight Window")
+                            .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                            .foregroundColor(gold)
+                        
+                        Text("Light & warm (Laghu). Finish 2–3h before sleep. Avoid heavy curd at night.")
+                            .font(.system(size: 11))
+                            .foregroundColor(.white.opacity(0.6))
+                    }
+                }
+                .padding(12)
+                .background(Color.white.opacity(0.03))
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke(isSayamActive ? gold.opacity(0.5) : Color.white.opacity(0.06), lineWidth: 1)
+                )
+            }
+            
+            // Sacred Note on Forbidden Twilight (Sandhyā Niṣiddha)
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: "exclamationmark.shield")
+                    .font(.system(size: 12))
+                    .foregroundColor(gold.opacity(0.85))
+                Text("Niṣiddha Kāla: Scripture advises refraining from eating during the exact sunset dusk sandhyā or late night (past 9 PM) to prevent toxic metabolic buildup (Āma).")
+                    .font(.system(size: 10.5))
+                    .foregroundColor(.white.opacity(0.55))
+                    .lineSpacing(2)
+            }
+            .padding(.top, 2)
+        }
+        .padding(16)
+        .background(Color(red: 0.08, green: 0.09, blue: 0.13))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(Color.white.opacity(0.06), lineWidth: 1)
+        )
+    }
+    
+    // MARK: - Nidrā Vijñāna & Sleep Architecture Card
     
     private func bedtimeRecommendationCard(snapshot: MuhurtaSnapshot) -> some View {
+        let gold = Color(red: 0.94, green: 0.76, blue: 0.42)
         let brahmaStart = snapshot.brahmaMuhurta.startTime
         let idealBedtimeStart = brahmaStart.addingTimeInterval(-8.0 * 3600.0)
         let idealBedtimeEnd = brahmaStart.addingTimeInterval(-7.5 * 3600.0)
@@ -872,37 +1043,185 @@ public struct SolarDashboardView: View {
         let f = DateFormatter()
         f.dateFormat = "h:mm a"
         let rangeStr = "\(f.string(from: idealBedtimeStart)) – \(f.string(from: idealBedtimeEnd))"
+        let brahmaTimeStr = f.string(from: brahmaStart)
         
-        return VStack(alignment: .leading, spacing: 10) {
+        return VStack(alignment: .leading, spacing: 14) {
+            // Header
             HStack {
-                Label("SANDHYA SLEEP ONSET", systemImage: "moon.fill")
-                    .font(.system(size: 10, weight: .bold, design: .rounded))
-                    .tracking(1.5)
-                    .foregroundColor(Color(red: 0.94, green: 0.76, blue: 0.42))
+                HStack(spacing: 7) {
+                    Image(systemName: "moon.stars.fill")
+                        .foregroundColor(gold)
+                        .font(.system(size: 13))
+                    Text("NIDRĀ VIJÑĀNA (वैदिक निद्रा विज्ञान)")
+                        .font(.system(size: 10.5, weight: .bold, design: .rounded))
+                        .tracking(1.3)
+                        .foregroundColor(gold)
+                }
                 
                 Spacer()
                 
-                Text("Kapha Phase (6–10 PM)")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.secondary)
+                Text("Brahma Awakening: \(brahmaTimeStr)")
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundColor(.white.opacity(0.8))
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 3)
+                    .background(Color.white.opacity(0.06))
+                    .clipShape(Capsule())
             }
             
-            HStack(alignment: .firstTextBaseline) {
-                Text(rangeStr)
-                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-                    .foregroundColor(.white)
+            // Primary Target Time Box
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(rangeStr)
+                        .font(.system(size: 22, weight: .bold, design: .serif))
+                        .foregroundColor(.white)
+                    
+                    Spacer()
+                    
+                    Text("5 Cycles • 7.5 hrs")
+                        .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                        .foregroundColor(gold)
+                }
                 
-                Spacer()
+                Text("Target sleep window to awaken naturally refreshed during Brahma Muhūrta (\(brahmaTimeStr)) without alarm shock.")
+                    .font(.system(size: 11))
+                    .foregroundColor(.white.opacity(0.65))
+            }
+            .padding(12)
+            .background(Color.white.opacity(0.03))
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            
+            // Three Doshic Night Phases
+            VStack(alignment: .leading, spacing: 8) {
+                Text("THE 3 NIGHT DOSHIC PHASES")
+                    .font(.system(size: 9.5, weight: .bold, design: .rounded))
+                    .tracking(1.0)
+                    .foregroundColor(gold.opacity(0.9))
                 
-                Text("5 Cycles (7.5 hrs)")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.secondary)
+                VStack(spacing: 6) {
+                    // 1. Kapha
+                    HStack(alignment: .top, spacing: 10) {
+                        Text("💧")
+                            .font(.system(size: 12))
+                        VStack(alignment: .leading, spacing: 1) {
+                            HStack {
+                                Text("6:00 PM – 10:00 PM (Kapha)")
+                                    .font(.system(size: 11.5, weight: .bold))
+                                    .foregroundColor(.white)
+                                Spacer()
+                                Text("Ideal Sleep Onset")
+                                    .font(.system(size: 9.5, weight: .semibold))
+                                    .foregroundColor(Color.cyan)
+                            }
+                            Text("Melatonin surges & body cools. Falling asleep before 10 PM harnesses Kapha for deep, dreamless rest.")
+                                .font(.system(size: 10.5))
+                                .foregroundColor(.white.opacity(0.6))
+                        }
+                    }
+                    .padding(9)
+                    .background(Color.white.opacity(0.02))
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    
+                    // 2. Pitta
+                    HStack(alignment: .top, spacing: 10) {
+                        Text("🔥")
+                            .font(.system(size: 12))
+                        VStack(alignment: .leading, spacing: 1) {
+                            HStack {
+                                Text("10:00 PM – 2:00 AM (Pitta)")
+                                    .font(.system(size: 11.5, weight: .bold))
+                                    .foregroundColor(.white)
+                                Spacer()
+                                Text("Cellular Repair")
+                                    .font(.system(size: 9.5, weight: .semibold))
+                                    .foregroundColor(Color.orange)
+                            }
+                            Text("Liver detox and tissue healing. Staying awake triggers a 'second wind', racing mind & late hunger.")
+                                .font(.system(size: 10.5))
+                                .foregroundColor(.white.opacity(0.6))
+                        }
+                    }
+                    .padding(9)
+                    .background(Color.white.opacity(0.02))
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    
+                    // 3. Vata
+                    HStack(alignment: .top, spacing: 10) {
+                        Text("💨")
+                            .font(.system(size: 12))
+                        VStack(alignment: .leading, spacing: 1) {
+                            HStack {
+                                Text("2:00 AM – 6:00 AM (Vāta)")
+                                    .font(.system(size: 11.5, weight: .bold))
+                                    .foregroundColor(.white)
+                                Spacer()
+                                Text("Brahma Awakening")
+                                    .font(.system(size: 9.5, weight: .semibold))
+                                    .foregroundColor(gold)
+                            }
+                            Text("Prāṇa peaks with stillness. Waking in Brahma Muhūrta grants effortless lightness and mental purity.")
+                                .font(.system(size: 10.5))
+                                .foregroundColor(.white.opacity(0.6))
+                        }
+                    }
+                    .padding(9)
+                    .background(Color.white.opacity(0.02))
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                }
             }
             
-            Text("To awaken naturally during Brahma Muhurta, sleep during the evening Kapha phase to complete 5 unbroken 90-minute ultradian sleep cycles.")
-                .font(.system(size: 11, weight: .regular))
-                .foregroundColor(.secondary)
-                .lineSpacing(2)
+            Divider().background(Color.white.opacity(0.08))
+            
+            // Sacred Vāstu & Sleep Posture Pillars
+            HStack(spacing: 10) {
+                // Directional Alignment
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "safari.fill")
+                            .font(.system(size: 11))
+                            .foregroundColor(gold)
+                        Text("VĀSTU DIRECTION")
+                            .font(.system(size: 9, weight: .bold, design: .rounded))
+                            .tracking(0.8)
+                            .foregroundColor(gold)
+                    }
+                    Text("Head South or East")
+                        .font(.system(size: 11.5, weight: .bold))
+                        .foregroundColor(.white)
+                    Text("Aligns with Earth's magnetic polarity. Avoid North (causes vascular strain & fragmented sleep).")
+                        .font(.system(size: 10))
+                        .foregroundColor(.white.opacity(0.55))
+                        .lineLimit(3)
+                }
+                .padding(10)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.white.opacity(0.02))
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                
+                // Vāmakukṣi Posture
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "figure.mind.and.body")
+                            .font(.system(size: 11))
+                            .foregroundColor(gold)
+                        Text("VĀMAKUKṢI POSTURE")
+                            .font(.system(size: 9, weight: .bold, design: .rounded))
+                            .tracking(0.8)
+                            .foregroundColor(gold)
+                    }
+                    Text("Sleep on Left Side")
+                        .font(.system(size: 11.5, weight: .bold))
+                        .foregroundColor(.white)
+                    Text("Activates Sūrya Nāḍī (right nostril), fueling digestive enzymes and preventing acid reflux.")
+                        .font(.system(size: 10))
+                        .foregroundColor(.white.opacity(0.55))
+                        .lineLimit(3)
+                }
+                .padding(10)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.white.opacity(0.02))
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            }
         }
         .padding(18)
         .background(Color(red: 0.08, green: 0.09, blue: 0.13))

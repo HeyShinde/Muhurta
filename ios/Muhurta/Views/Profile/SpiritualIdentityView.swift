@@ -147,6 +147,7 @@ public struct SpiritualIdentityCard: View {
                         .font(.system(size: 12, weight: .bold, design: .serif))
                         .foregroundColor(.white)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.7)
                 }
                 .padding(10)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -164,6 +165,7 @@ public struct SpiritualIdentityCard: View {
                         .font(.system(size: 12, weight: .bold, design: .serif))
                         .foregroundColor(.white)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.7)
                 }
                 .padding(10)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -181,6 +183,7 @@ public struct SpiritualIdentityCard: View {
                         .font(.system(size: 12, weight: .bold, design: .serif))
                         .foregroundColor(gold)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.7)
                 }
                 .padding(10)
                 .frame(maxWidth: .infinity, alignment: .leading)
