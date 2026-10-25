@@ -1,0 +1,599 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 110;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		07631A88E171699EDEDAC450 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 78B66F34AF555E085F31A3F9 /* FirebaseCore */; };
+		218BBAE28F80C47ABE137452 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 7F83AEFDC0AC346CBEEA7097 /* FirebaseAuth */; };
+		6925503FB95ECC10699A9C0A /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D13DA3966EE2E4CD274EFC44 /* FirebaseFirestore */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6C53C1A8308D09FA002140B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6C53C190308D09F9002140B7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6C53C197308D09F9002140B7;
+			remoteInfo = Muhurta;
+		};
+		6C53C1B2308D09FA002140B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6C53C190308D09F9002140B7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6C53C197308D09F9002140B7;
+			remoteInfo = Muhurta;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		529D65CD6CBB6E797253DF47 /* GoogleService-Info.plist */ = {isa = PBXFileReference; explicitFileType = text.plist; name = "GoogleService-Info.plist"; path = "Muhurta/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		6C53C198308D09F9002140B7 /* Muhurta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Muhurta.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6C53C1A7308D09FA002140B7 /* MuhurtaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MuhurtaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6C53C1B1308D09FA002140B7 /* MuhurtaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MuhurtaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		6C53C19A308D09F9002140B7 /* Muhurta */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Muhurta;
+			sourceTree = "<group>";
+		};
+		6C53C1AA308D09FA002140B7 /* MuhurtaTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MuhurtaTests;
+			sourceTree = "<group>";
+		};
+		6C53C1B4308D09FA002140B7 /* MuhurtaUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MuhurtaUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6C53C195308D09F9002140B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				07631A88E171699EDEDAC450 /* FirebaseCore in Frameworks */,
+				218BBAE28F80C47ABE137452 /* FirebaseAuth in Frameworks */,
+				6925503FB95ECC10699A9C0A /* FirebaseFirestore in Frameworks */,
+			);
+		};
+		6C53C1A4308D09FA002140B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		6C53C1AE308D09FA002140B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6C53C18F308D09F9002140B7 = {
+			isa = PBXGroup;
+			children = (
+				6C53C19A308D09F9002140B7 /* Muhurta */,
+				6C53C1AA308D09FA002140B7 /* MuhurtaTests */,
+				6C53C1B4308D09FA002140B7 /* MuhurtaUITests */,
+				6C53C199308D09F9002140B7 /* Products */,
+				529D65CD6CBB6E797253DF47 /* GoogleService-Info.plist */,
+			);
+			sourceTree = "<group>";
+		};
+		6C53C199308D09F9002140B7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6C53C198308D09F9002140B7 /* Muhurta.app */,
+				6C53C1A7308D09FA002140B7 /* MuhurtaTests.xctest */,
+				6C53C1B1308D09FA002140B7 /* MuhurtaUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6C53C197308D09F9002140B7 /* Muhurta */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6C53C1B9308D09FA002140B7 /* Build configuration list for PBXNativeTarget "Muhurta" */;
+			buildPhases = (
+				6C53C194308D09F9002140B7 /* Sources */,
+				6C53C195308D09F9002140B7 /* Frameworks */,
+				6C53C196308D09F9002140B7 /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				6C53C19A308D09F9002140B7 /* Muhurta */,
+			);
+			name = Muhurta;
+			packageProductDependencies = (
+				78B66F34AF555E085F31A3F9 /* FirebaseCore */,
+				7F83AEFDC0AC346CBEEA7097 /* FirebaseAuth */,
+				D13DA3966EE2E4CD274EFC44 /* FirebaseFirestore */,
+			);
+			productName = Muhurta;
+			productReference = 6C53C198308D09F9002140B7 /* Muhurta.app */;
+			productType = "com.apple.product-type.application";
+		};
+		6C53C1A6308D09FA002140B7 /* MuhurtaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6C53C1BC308D09FA002140B7 /* Build configuration list for PBXNativeTarget "MuhurtaTests" */;
+			buildPhases = (
+				6C53C1A3308D09FA002140B7 /* Sources */,
+				6C53C1A4308D09FA002140B7 /* Frameworks */,
+				6C53C1A5308D09FA002140B7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6C53C1A9308D09FA002140B7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				6C53C1AA308D09FA002140B7 /* MuhurtaTests */,
+			);
+			name = MuhurtaTests;
+			productName = MuhurtaTests;
+			productReference = 6C53C1A7308D09FA002140B7 /* MuhurtaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		6C53C1B0308D09FA002140B7 /* MuhurtaUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6C53C1BF308D09FA002140B7 /* Build configuration list for PBXNativeTarget "MuhurtaUITests" */;
+			buildPhases = (
+				6C53C1AD308D09FA002140B7 /* Sources */,
+				6C53C1AE308D09FA002140B7 /* Frameworks */,
+				6C53C1AF308D09FA002140B7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6C53C1B3308D09FA002140B7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				6C53C1B4308D09FA002140B7 /* MuhurtaUITests */,
+			);
+			name = MuhurtaUITests;
+			productName = MuhurtaUITests;
+			productReference = 6C53C1B1308D09FA002140B7 /* MuhurtaUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6C53C190308D09F9002140B7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2710;
+				LastUpgradeCheck = 2710;
+				TargetAttributes = {
+					6C53C197308D09F9002140B7 = {
+						CreatedOnToolsVersion = 27.1;
+					};
+					6C53C1A6308D09FA002140B7 = {
+						CreatedOnToolsVersion = 27.1;
+						TestTargetID = 6C53C197308D09F9002140B7;
+					};
+					6C53C1B0308D09FA002140B7 = {
+						CreatedOnToolsVersion = 27.1;
+						TestTargetID = 6C53C197308D09F9002140B7;
+					};
+				};
+			};
+			buildConfigurationList = 6C53C193308D09F9002140B7 /* Build configuration list for PBXProject "Muhurta" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 6C53C18F308D09F9002140B7;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				587EB58A3703913DCB483946 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
+			preferredProjectObjectVersion = 110;
+			productRefGroup = 6C53C199308D09F9002140B7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6C53C197308D09F9002140B7 /* Muhurta */,
+				6C53C1A6308D09FA002140B7 /* MuhurtaTests */,
+				6C53C1B0308D09FA002140B7 /* MuhurtaUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6C53C196308D09F9002140B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		6C53C1A5308D09FA002140B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		6C53C1AF308D09FA002140B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6C53C194308D09F9002140B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		6C53C1A3308D09FA002140B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		6C53C1AD308D09FA002140B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6C53C1A9308D09FA002140B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6C53C197308D09F9002140B7 /* Muhurta */;
+			targetProxy = 6C53C1A8308D09FA002140B7 /* PBXContainerItemProxy */;
+		};
+		6C53C1B3308D09FA002140B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6C53C197308D09F9002140B7 /* Muhurta */;
+			targetProxy = 6C53C1B2308D09FA002140B7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		6C53C1B7308D09FA002140B7 /* Debug configuration for PBXProject "Muhurta" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = GLDAB93983;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		6C53C1B8308D09FA002140B7 /* Release configuration for PBXProject "Muhurta" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = GLDAB93983;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		6C53C1BA308D09FA002140B7 /* Debug configuration for PBXNativeTarget "Muhurta" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Muhurta/Muhurta.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GLDAB93983;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shindeaditya.Muhurta;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6C53C1BB308D09FA002140B7 /* Release configuration for PBXNativeTarget "Muhurta" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Muhurta/Muhurta.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GLDAB93983;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shindeaditya.Muhurta;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		6C53C1BD308D09FA002140B7 /* Debug configuration for PBXNativeTarget "MuhurtaTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GLDAB93983;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shindeaditya.MuhurtaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Muhurta.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Muhurta";
+			};
+			name = Debug;
+		};
+		6C53C1BE308D09FA002140B7 /* Release configuration for PBXNativeTarget "MuhurtaTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GLDAB93983;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shindeaditya.MuhurtaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Muhurta.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Muhurta";
+			};
+			name = Release;
+		};
+		6C53C1C0308D09FA002140B7 /* Debug configuration for PBXNativeTarget "MuhurtaUITests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GLDAB93983;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.shindeaditya.MuhurtaUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Muhurta;
+			};
+			name = Debug;
+		};
+		6C53C1C1308D09FA002140B7 /* Release configuration for PBXNativeTarget "MuhurtaUITests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GLDAB93983;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.shindeaditya.MuhurtaUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Muhurta;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6C53C193308D09F9002140B7 /* Build configuration list for PBXProject "Muhurta" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6C53C1B7308D09FA002140B7 /* Debug configuration for PBXProject "Muhurta" */,
+				6C53C1B8308D09FA002140B7 /* Release configuration for PBXProject "Muhurta" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		6C53C1B9308D09FA002140B7 /* Build configuration list for PBXNativeTarget "Muhurta" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6C53C1BA308D09FA002140B7 /* Debug configuration for PBXNativeTarget "Muhurta" */,
+				6C53C1BB308D09FA002140B7 /* Release configuration for PBXNativeTarget "Muhurta" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		6C53C1BC308D09FA002140B7 /* Build configuration list for PBXNativeTarget "MuhurtaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6C53C1BD308D09FA002140B7 /* Debug configuration for PBXNativeTarget "MuhurtaTests" */,
+				6C53C1BE308D09FA002140B7 /* Release configuration for PBXNativeTarget "MuhurtaTests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		6C53C1BF308D09FA002140B7 /* Build configuration list for PBXNativeTarget "MuhurtaUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6C53C1C0308D09FA002140B7 /* Debug configuration for PBXNativeTarget "MuhurtaUITests" */,
+				6C53C1C1308D09FA002140B7 /* Release configuration for PBXNativeTarget "MuhurtaUITests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		587EB58A3703913DCB483946 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		78B66F34AF555E085F31A3F9 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 587EB58A3703913DCB483946 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		7F83AEFDC0AC346CBEEA7097 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 587EB58A3703913DCB483946 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		D13DA3966EE2E4CD274EFC44 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 587EB58A3703913DCB483946 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 6C53C190308D09F9002140B7 /* Project object */;
+}
