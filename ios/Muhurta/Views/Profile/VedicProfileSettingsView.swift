@@ -21,6 +21,7 @@ struct VedicProfileSettingsView: View {
     @State private var showingAuthModal = false
     @State private var showingAccountModal = false
     @State private var showingGuideModal = false
+    @State private var showingSupportModal = false
     @State private var eventToEdit: UserLifeEvent? = nil
     @State private var eventToDelete: UserLifeEvent? = nil
     @State private var showingDeleteConfirmation = false
@@ -73,6 +74,9 @@ struct VedicProfileSettingsView: View {
                         // Cosmic Masterclass Educational Banner
                         educationalMasterclassBanner
                         
+                        // Contribute & Seva (Funds & Open Source Code)
+                        contributeAndSevaCard
+                        
                         // Tradition & Ephemeris Credentials
                         ephemerisCredentialsCard
                             .padding(.bottom, 100) // Clearance for floating dock
@@ -97,6 +101,9 @@ struct VedicProfileSettingsView: View {
             }
             .sheet(item: $eventToEdit) { event in
                 AddLifeEventView(eventToEdit: event)
+            }
+            .sheet(isPresented: $showingSupportModal) {
+                SupportSanctuaryView()
             }
             .alert("Delete Milestone?", isPresented: $showingDeleteConfirmation, presenting: eventToDelete) { event in
                 Button("Delete", role: .destructive) {
@@ -671,7 +678,103 @@ struct VedicProfileSettingsView: View {
         .buttonStyle(.plain)
     }
     
-    // MARK: - 7. Ephemeris Credentials
+    // MARK: - 7. Contribute & Seva Card
+    
+    private var contributeAndSevaCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                HStack(spacing: 6) {
+                    Text("ॐ")
+                        .font(.system(size: 15, weight: .bold, design: .serif))
+                        .foregroundColor(gold)
+                    Text("CONTRIBUTE & SEVA (सहयोग एवं सेवा)")
+                        .font(.system(size: 10.5, weight: .bold, design: .rounded))
+                        .tracking(1.4)
+                        .foregroundColor(gold)
+                }
+                Spacer()
+                Text("100% Free & Open")
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundColor(.white.opacity(0.85))
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 3)
+                    .background(Color.white.opacity(0.08))
+                    .clipShape(Capsule())
+            }
+            
+            Text("Muhūrta is an open-source, ad-free sacred offering. You can support the continuous preservation of Vedic chronometry through code or voluntary Dakṣiṇā.")
+                .font(.system(size: 12))
+                .foregroundColor(.white.opacity(0.7))
+                .lineSpacing(2)
+            
+            HStack(spacing: 10) {
+                // Support with Code (GitHub)
+                Link(destination: URL(string: "https://github.com/heyshinde/Muhurta")!) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "chevron.left.forwardslash.chevron.right")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(gold)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text("Open Source")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundColor(.white)
+                            Text("GitHub Repo")
+                                .font(.system(size: 10))
+                                .foregroundColor(.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(11)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.white.opacity(0.04))
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                    )
+                }
+                
+                // Support with Funds (Offerings & Dakshina)
+                Button {
+                    showingSupportModal = true
+                } label: {
+                    HStack(spacing: 8) {
+                        Text("🪔")
+                            .font(.system(size: 14))
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text("Dakṣiṇā")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundColor(.black)
+                            Text("Offer Support")
+                                .font(.system(size: 10, weight: .semibold))
+                                .foregroundColor(Color.black.opacity(0.75))
+                        }
+                        Spacer()
+                        Image(systemName: "heart.fill")
+                            .font(.system(size: 10))
+                            .foregroundColor(Color.black.opacity(0.6))
+                    }
+                    .padding(11)
+                    .frame(maxWidth: .infinity)
+                    .background(gold)
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .shadow(color: gold.opacity(0.25), radius: 6, y: 2)
+                }
+            }
+        }
+        .padding(18)
+        .background(Color(red: 0.08, green: 0.09, blue: 0.13))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(gold.opacity(0.2), lineWidth: 1)
+        )
+    }
+    
+    // MARK: - 8. Ephemeris Credentials
     
     private var ephemerisCredentialsCard: some View {
         VStack(spacing: 6) {
