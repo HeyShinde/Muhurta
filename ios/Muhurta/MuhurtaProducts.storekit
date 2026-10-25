@@ -11,7 +11,7 @@
   ],
   "products" : [
     {
-      "displayPrice" : "4.99",
+      "displayPrice" : "499",
       "familyShareable" : false,
       "internalID" : "420101",
       "localizations" : [
@@ -26,7 +26,7 @@
       "type" : "Consumable"
     },
     {
-      "displayPrice" : "9.99",
+      "displayPrice" : "999",
       "familyShareable" : false,
       "internalID" : "420102",
       "localizations" : [
@@ -41,7 +41,7 @@
       "type" : "Consumable"
     },
     {
-      "displayPrice" : "24.99",
+      "displayPrice" : "2499",
       "familyShareable" : false,
       "internalID" : "420103",
       "localizations" : [
@@ -56,7 +56,7 @@
       "type" : "Consumable"
     },
     {
-      "displayPrice" : "99.99",
+      "displayPrice" : "9999",
       "familyShareable" : false,
       "internalID" : "420104",
       "localizations" : [
@@ -73,8 +73,8 @@
   ],
   "settings" : {
     "_failTransactionsEnabled" : false,
-    "_locale" : "en_US",
-    "_storefront" : "USA",
+    "_locale" : "en_IN",
+    "_storefront" : "IND",
     "_storeKitErrors" : [
 
     ]
@@ -94,7 +94,7 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "9.99",
+          "displayPrice" : "999",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "420105",

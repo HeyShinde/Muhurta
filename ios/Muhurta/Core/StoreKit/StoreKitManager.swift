@@ -55,6 +55,7 @@ public final class StoreKitManager: ObservableObject {
         do {
             let fetched = try await Product.products(for: Self.allProductIDs)
             self.products = fetched.sorted { $0.price < $1.price }
+            print("StoreKit: Successfully loaded \(fetched.count) products: \(fetched.map { "\($0.id) -> \($0.displayPrice)" })")
         } catch {
             print("StoreKit: Failed to load products: \(error.localizedDescription)")
             self.errorMessage = error.localizedDescription
