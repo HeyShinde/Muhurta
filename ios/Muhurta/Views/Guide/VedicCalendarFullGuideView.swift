@@ -42,36 +42,35 @@ struct VedicCalendarFullGuideView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(red: 0.05, green: 0.06, blue: 0.09).ignoresSafeArea()
+            VStack(spacing: 0) {
+                // Category Tab Bar
+                categoryTabBar
+                    .padding(.vertical, 8)
+                    .background(Color(red: 0.07, green: 0.08, blue: 0.12))
                 
-                VStack(spacing: 0) {
-                    // Category Tab Bar
-                    categoryTabBar
-                        .padding(.vertical, 8)
-                        .background(Color(red: 0.07, green: 0.08, blue: 0.12))
-                    
-                    ScrollView {
-                        VStack(spacing: 24) {
-                            switch selectedTab {
-                            case .midnightVsSunrise:
-                                midnightVsSunriseSection
-                            case .cosmicEpoch:
-                                cosmicEpochSection
-                            case .solarSeasons:
-                                solarSeasonsSection
-                            case .lunarTithis:
-                                lunarTithisSection
-                            case .muhurtas:
-                                thirtyMuhurtasSection
-                            case .converter:
-                                interactiveConverterSection
-                            }
+                ScrollView {
+                    VStack(spacing: 24) {
+                        switch selectedTab {
+                        case .midnightVsSunrise:
+                            midnightVsSunriseSection
+                        case .cosmicEpoch:
+                            cosmicEpochSection
+                        case .solarSeasons:
+                            solarSeasonsSection
+                        case .lunarTithis:
+                            lunarTithisSection
+                        case .muhurtas:
+                            thirtyMuhurtasSection
+                        case .converter:
+                            interactiveConverterSection
                         }
-                        .padding(20)
                     }
+                    .padding(20)
                 }
             }
+            .background(Color(red: 0.05, green: 0.06, blue: 0.09).ignoresSafeArea())
+            .toolbarBackground(Color(red: 0.05, green: 0.06, blue: 0.09), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .navigationTitle("Vedic Calendar Guide")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

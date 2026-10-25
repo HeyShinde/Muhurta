@@ -124,9 +124,13 @@ struct VedicProfileSettingsView: View {
             }
             .sheet(isPresented: $showingSupportModal) {
                 SupportSanctuaryView()
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
             }
             .sheet(isPresented: $showingAllMilestones) {
                 AllSacredMilestonesView()
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
             }
             .alert("Delete Milestone?", isPresented: $showingDeleteConfirmation, presenting: eventToDelete) { event in
                 Button("Delete", role: .destructive) {

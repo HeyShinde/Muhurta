@@ -68,32 +68,31 @@ struct AllSacredMilestonesView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(red: 0.05, green: 0.06, blue: 0.08).ignoresSafeArea()
+            VStack(spacing: 0) {
+                // Search & Filter Bar
+                filterBar
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                    .padding(.bottom, 12)
                 
-                VStack(spacing: 0) {
-                    // Search & Filter Bar
-                    filterBar
-                        .padding(.horizontal, 16)
-                        .padding(.top, 8)
-                        .padding(.bottom, 12)
-                    
-                    if filteredEvents.isEmpty {
-                        emptyFilterView
-                    } else {
-                        ScrollView {
-                            LazyVStack(spacing: 12) {
-                                ForEach(filteredEvents) { event in
-                                    milestoneRowCard(event: event, isNextUpcoming: event.id == sortedEvents.first?.id)
-                                }
+                if filteredEvents.isEmpty {
+                    emptyFilterView
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: 12) {
+                            ForEach(filteredEvents) { event in
+                                milestoneRowCard(event: event, isNextUpcoming: event.id == sortedEvents.first?.id)
                             }
-                            .padding(.horizontal, 16)
-                            .padding(.top, 4)
-                            .padding(.bottom, 40)
                         }
+                        .padding(.horizontal, 16)
+                        .padding(.top, 4)
+                        .padding(.bottom, 40)
                     }
                 }
             }
+            .background(Color(red: 0.05, green: 0.06, blue: 0.08).ignoresSafeArea())
+            .toolbarBackground(Color(red: 0.05, green: 0.06, blue: 0.08), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .navigationTitle("Sacred Milestones")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

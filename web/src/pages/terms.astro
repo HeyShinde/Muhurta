@@ -1,0 +1,125 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const lastUpdated = "October 2026";
+---
+
+<Layout 
+  title="Terms of Service • Muhūrta"
+  description="Terms of Service and End User License Agreement for Muhūrta: Vedic Calendar."
+>
+  <div class="container terms-container">
+    <div class="terms-header">
+      <span class="badge-gold">LEGAL & ETHICS</span>
+      <h1>Terms of Service</h1>
+      <p class="terms-date">Last Updated: {lastUpdated}</p>
+    </div>
+
+    <div class="glass-panel terms-content prose">
+      <p class="lead-text">
+        These Terms of Service ("Terms") govern your use of the <strong>Muhūrta: Vedic Calendar</strong> application for iOS 
+        and the website located at <a href="https://muhurta.shindeaditya.com">muhurta.shindeaditya.com</a>. 
+        By downloading, installing, or accessing Muhūrta, you agree to these Terms.
+      </p>
+
+      <h2>1. Open Source License & Software Distribution</h2>
+      <p>
+        The Muhūrta application code is licensed under the <strong>GNU General Public License v3.0 (GPLv3)</strong>. 
+        You may inspect, review, verify, and redistribute the open-source codebase in accordance with the terms of the GPLv3 license. 
+        Distribution through the Apple App Store is additionally subject to the <strong>Apple Standard End User License Agreement (EULA)</strong>.
+      </p>
+
+      <h2>2. Sacred Chronometry & Informational Disclaimer</h2>
+      <p>
+        Muhūrta calculates astronomical and solar ephemeris metrics (including Sūryodaya, Sūryāsta, Madhyāhna, Tithis, Nakṣatras, 
+        and the 30 Vedic Muhūrtas) based on classical treatises (such as the <em>Sūryasiddhānta</em>) combined with modern high-precision celestial mechanics.
+      </p>
+      <ul>
+        <li><strong>Informational & Cultural Purpose</strong>: All calculations, doshic circadian insights, sleep recommendations (Nidrā Vijñāna), and auspicious time suggestions are provided strictly for cultural, educational, and spiritual enrichment.</li>
+        <li><strong>Medical Disclaimer</strong>: Doshic biological rhythms and meal timing guidance do not constitute professional medical advice, diagnosis, or clinical prescriptions. Always consult qualified healthcare professionals for medical conditions.</li>
+      </ul>
+
+      <h2>3. Voluntary Offerings & In-App Purchases</h2>
+      <p>
+        Muhūrta is completely free, open-source, and does not restrict any core Vedic or astronomical functionality behind paywalls.
+      </p>
+      <ul>
+        <li><strong>Voluntary Offerings (Consumables)</strong>: Offerings such as <em>Dīpa Offering ($4.99)</em>, <em>Puṣpa Offering ($9.99)</em>, <em>Archana Patron ($24.99)</em>, and <em>Temple Benefactor ($99.99)</em> are voluntary, one-time gifts of Dakṣiṇā to support indie development, server ephemeris feeds, and open Vedic research.</li>
+        <li><strong>Annual Patronage Subscription</strong>: The <em>Annual Seeker Patron ($9.99 / year)</em> is an optional auto-renewing subscription.
+          <ul>
+            <li>Payment is charged to your Apple ID account at confirmation of purchase.</li>
+            <li>Subscription automatically renews unless auto-renew is turned off at least 24 hours before the end of the current billing cycle.</li>
+            <li>You can manage or cancel your subscription at any time via your iOS device <strong>Settings -> Apple ID -> Subscriptions</strong>.</li>
+          </ul>
+        </li>
+        <li><strong>Restoring Purchases</strong>: You may restore past voluntary offerings or subscriptions at any time via the "Restore Purchases" button in the app's Contribute & Seva section.</li>
+      </ul>
+
+      <h2>4. User Conduct & Acceptable Use</h2>
+      <p>
+        You agree to use Muhūrta in accordance with all applicable local, national, and international laws. 
+        You agree not to reverse engineer or disrupt services in any manner not permitted by the GNU GPLv3 license.
+      </p>
+
+      <h2>5. Limitation of Liability</h2>
+      <p>
+        Muhūrta and its contributors provide the software on an "AS IS" and "AS AVAILABLE" basis, without warranties of any kind, 
+        either express or implied. Under no circumstances shall the author or contributors be liable for any direct, indirect, 
+        incidental, special, or consequential damages resulting from the use or inability to use this software.
+      </p>
+
+      <h2>6. Contact Information</h2>
+      <p>
+        For inquiries regarding these Terms of Service:
+      </p>
+      <p>
+        <strong>Email</strong>: <a href="mailto:terms@shindeaditya.com">terms@shindeaditya.com</a><br/>
+        <strong>Website</strong>: <a href="https://muhurta.shindeaditya.com">muhurta.shindeaditya.com</a>
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .terms-container {
+    padding: 60px 0 100px;
+    max-width: 860px;
+  }
+
+  .terms-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .terms-header h1 {
+    font-size: 2.8rem;
+    margin: 14px 0 10px;
+  }
+
+  .terms-date {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .terms-content {
+    padding: 48px 56px;
+  }
+
+  .lead-text {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: #ffffff;
+    border-left: 3px solid var(--gold-primary);
+    padding-left: 20px;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .terms-content {
+      padding: 28px 24px;
+    }
+    .terms-header h1 {
+      font-size: 2.2rem;
+    }
+  }
+</style>

@@ -1,0 +1,125 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+
+    ]
+  },
+  "identifier" : "E2B7A091",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "420101",
+      "localizations" : [
+        {
+          "description" : "A gentle flame honoring daily sacred solar calculations.",
+          "displayName" : "Dīpa Offering",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.shindeaditya.Muhurta.tip.dipa",
+      "referenceName" : "Dīpa Offering",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "420102",
+      "localizations" : [
+        {
+          "description" : "A fragrant floral offering supporting sacred audio & mantra preservation.",
+          "displayName" : "Puṣpa Offering",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.shindeaditya.Muhurta.tip.pushpa",
+      "referenceName" : "Puṣpa Offering",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "24.99",
+      "familyShareable" : false,
+      "internalID" : "420103",
+      "localizations" : [
+        {
+          "description" : "A profound traditional Vedic offering powering astronomical precision.",
+          "displayName" : "Archana Patron",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.shindeaditya.Muhurta.tip.archana",
+      "referenceName" : "Archana Patron",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "99.99",
+      "familyShareable" : false,
+      "internalID" : "420104",
+      "localizations" : [
+        {
+          "description" : "Enduring patronage honoring the eternal preservation of Vedic sciences.",
+          "displayName" : "Temple Benefactor",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.shindeaditya.Muhurta.tip.benefactor",
+      "referenceName" : "Temple Benefactor",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "E2B7A092",
+      "localizations" : [
+
+      ],
+      "name" : "Vedic Patronage",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "420105",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Continuous year-round patronage sustaining open Vedic research.",
+              "displayName" : "Annual Seeker Patron",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.shindeaditya.Muhurta.tip.annual",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Annual Seeker Patron",
+          "subscriptionGroupID" : "E2B7A092",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

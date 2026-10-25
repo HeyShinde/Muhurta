@@ -1,0 +1,136 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const lastUpdated = "October 2026";
+---
+
+<Layout 
+  title="Privacy Sanctuary • Muhūrta"
+  description="Official Privacy Policy for Muhūrta: Vedic Calendar. 100% On-Device, Zero Ads, Zero Data Brokering, and No Third-Party Trackers."
+>
+  <div class="container policy-container">
+    <div class="policy-header">
+      <span class="badge-gold">SACRED PRIVACY</span>
+      <h1>Privacy Policy</h1>
+      <p class="policy-date">Last Updated: {lastUpdated}</p>
+    </div>
+
+    <div class="glass-panel policy-content prose">
+      <p class="lead-text">
+        At <strong>Muhūrta</strong> (accessible via our iOS app and <a href="https://muhurta.shindeaditya.com">muhurta.shindeaditya.com</a>), 
+        we treat your spiritual life and daily routines as an inviolable sanctuary. 
+        We are an independent, non-commercial open-source project. 
+        We do not sell advertising, do not track users, and do not monetize personal data.
+      </p>
+
+      <h2>1. The Core Principle: Local On-Device Computing</h2>
+      <p>
+        Unlike conventional astrology apps that send your date, time, and coordinates to remote cloud servers for analysis, 
+        <strong>Muhūrta performs all astronomical and ephemeris calculations entirely on your physical device</strong> using Swift 6 mathematics. 
+        Your birth details, Sankalpas, milestones, and daily routines never leave your hardware.
+      </p>
+
+      <h2>2. Location Information</h2>
+      <p>
+        To determine precise astronomical sunrise, sunset, true solar noon (Madhyāhna), Sandhyā twilight, and lunar tithi transitions, 
+        the app requests access to your geographic location (latitude and longitude).
+      </p>
+      <ul>
+        <li><strong>On-Device Use Only</strong>: Your location is queried solely by the local Swiss Ephemeris and solar trigonometric models on your iPhone or iPad.</li>
+        <li><strong>Zero Remote Transmission</strong>: Coordinates are never transmitted to our servers, logged to analytics systems, or shared with third parties.</li>
+        <li><strong>No Background Surveillance</strong>: We do not track location in the background. Location is sampled only when the app is actively computing or refreshing ephemeris data.</li>
+      </ul>
+
+      <h2>3. Personal Information & Sacred Milestones</h2>
+      <p>
+        When you create sacred milestones (such as birth tithis, anniversaries, or Saṁskāras):
+      </p>
+      <ul>
+        <li>Data is stored in local sandboxed storage on your device.</li>
+        <li>If synchronization is enabled, records are backed up via your private <strong>Apple iCloud</strong> container. We have no access to your iCloud account, keys, or records.</li>
+      </ul>
+
+      <h2>4. Voluntary In-App Offerings (StoreKit 2)</h2>
+      <p>
+        Muhūrta is completely free to use. Users may voluntarily offer Dakṣiṇā (tips or annual patronage) to sustain development. 
+        All financial transactions are conducted strictly through <strong>Apple’s StoreKit 2 API</strong>. 
+        Muhūrta does not receive, view, or store your credit card, debit card, or billing information. Apple processes all transactions pursuant to Apple’s Privacy Policy.
+      </p>
+
+      <h2>5. No Advertising & No Third-Party Trackers</h2>
+      <p>
+        Muhūrta contains:
+      </p>
+      <ul>
+        <li><strong>Zero</strong> third-party advertising SDKs (no Google AdMob, no Meta Audience Network).</li>
+        <li><strong>Zero</strong> behavioral analytics trackers (no Mixpanel, no AppsFlyer, no Firebase Analytics).</li>
+        <li><strong>Zero</strong> data broker partnerships.</li>
+      </ul>
+
+      <h2>6. Open Source Transparency</h2>
+      <p>
+        Our entire source code is openly published under the <strong>GNU General Public License v3.0 (GPLv3)</strong> on GitHub: 
+        <a href="https://github.com/heyshinde/Muhurta" target="_blank" rel="noopener noreferrer">github.com/heyshinde/Muhurta</a>. 
+        Anyone can independently audit the application binary and inspect how location and data are handled.
+      </p>
+
+      <h2>7. Children's Privacy</h2>
+      <p>
+        Muhūrta is a universal chronometry tool for all ages. We do not knowingly solicit or collect any personal information from children or adults.
+      </p>
+
+      <h2>8. Contact Regarding Privacy</h2>
+      <p>
+        If you have questions, inquiries, or concerns regarding this Privacy Sanctuary, please reach out to:
+      </p>
+      <p>
+        <strong>Email</strong>: <a href="mailto:privacy@shindeaditya.com">privacy@shindeaditya.com</a><br/>
+        <strong>Repository</strong>: <a href="https://github.com/heyshinde/Muhurta/issues" target="_blank" rel="noopener noreferrer">GitHub Issues</a>
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .policy-container {
+    padding: 60px 0 100px;
+    max-width: 860px;
+  }
+
+  .policy-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .policy-header h1 {
+    font-size: 2.8rem;
+    margin: 14px 0 10px;
+  }
+
+  .policy-date {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .policy-content {
+    padding: 48px 56px;
+  }
+
+  .lead-text {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: #ffffff;
+    border-left: 3px solid var(--gold-primary);
+    padding-left: 20px;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .policy-content {
+      padding: 28px 24px;
+    }
+    .policy-header h1 {
+      font-size: 2.2rem;
+    }
+  }
+</style>

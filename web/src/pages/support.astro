@@ -1,0 +1,229 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Support & Seva Sanctuary • Muhūrta"
+  description="Official support, help guides, troubleshooting, and In-App Purchase assistance for Muhūrta: Vedic Calendar."
+>
+  <div class="container support-page">
+    <div class="support-header">
+      <span class="badge-gold">SEVA & ASSISTANCE</span>
+      <h1>Support Sanctuary</h1>
+      <p class="subtitle">
+        We are devoted to maintaining Muhūrta as an impeccable, authentic Vedic chronometry experience. 
+        Explore our guides below or reach out directly for assistance.
+      </p>
+    </div>
+
+    <!-- Quick Help Grid -->
+    <div class="support-grid">
+      <!-- Contact Card -->
+      <div class="glass-panel help-card">
+        <div class="card-icon">📬</div>
+        <h3>Direct Contact & Inquiries</h3>
+        <p>Need assistance with your installation, calculations, or astronomical verification?</p>
+        <div class="contact-links">
+          <a href="mailto:support@shindeaditya.com" class="btn-primary">
+            Email Support Team
+          </a>
+          <span class="contact-sub">Response typically within 24–48 hours</span>
+        </div>
+      </div>
+
+      <!-- GitHub Community -->
+      <div class="glass-panel help-card">
+        <div class="card-icon">🛠️</div>
+        <h3>Open Source & Bug Tracking</h3>
+        <p>Muhūrta is completely open-source (GPLv3). Report computational defects, request features, or review astronomical math.</p>
+        <div class="contact-links">
+          <a href="https://github.com/heyshinde/Muhurta/issues" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+            Open a GitHub Issue
+          </a>
+          <span class="contact-sub">Public, community-audited development</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+
+      <div class="faq-list">
+        <!-- FAQ 1 -->
+        <div class="glass-panel faq-item">
+          <h3>Why does the Vedic day differ from my mechanical clock?</h3>
+          <p>
+            Standard Gregorian calendars tick to a new day at arbitrary midnight (12:00 AM). 
+            In classical Vedic chronometry (Sūryasiddhānta), a day (Ahorātra) commences exactly at <strong>Sūryodaya (Astronomical Sunrise)</strong> 
+            and continues until the following dawn. The active Tithi, Nakṣatra, and ruling planet reflect this solar reality.
+          </p>
+        </div>
+
+        <!-- FAQ 2 -->
+        <div class="glass-panel faq-item">
+          <h3>How do voluntary Dakṣiṇā offerings and patronage work?</h3>
+          <p>
+            Muhūrta is 100% free with zero paywalls. In accordance with Apple App Store Review Guideline 3.1.1, 
+            users may optionally offer voluntary Dakṣiṇā to support indie development, server ephemeris data, and open research:
+          </p>
+          <ul class="faq-bullets">
+            <li><strong>🪔 Dīpa Offering ($4.99)</strong>: One-time consumable gift honoring solar calculations.</li>
+            <li><strong>🌸 Puṣpa Offering ($9.99)</strong>: One-time consumable gift supporting audio chants.</li>
+            <li><strong>🥥 Archana Patron ($24.99)</strong>: One-time consumable gift powering mathematical ephemeris accuracy.</li>
+            <li><strong>🏛️ Temple Benefactor ($99.99)</strong>: One-time consumable gift sustaining long-term preservation.</li>
+            <li><strong>✨ Annual Seeker Patron ($9.99 / year)</strong>: Optional auto-renewing yearly patronage.</li>
+          </ul>
+        </div>
+
+        <!-- FAQ 3 -->
+        <div class="glass-panel faq-item">
+          <h3>How do I restore my previous purchases or subscriptions?</h3>
+          <p>
+            If you change devices or reinstall Muhūrta, open the app, navigate to <strong>Profile</strong> -> tap 
+            <strong>Contribute & Seva</strong> (or the Dakṣiṇā button) -> scroll to the bottom and tap <strong>Restore Purchases</strong>. 
+            StoreKit will automatically synchronize with your Apple ID.
+          </p>
+        </div>
+
+        <!-- FAQ 4 -->
+        <div class="glass-panel faq-item">
+          <h3>Why does Muhūrta require location access?</h3>
+          <p>
+            Astronomical sunrise, solar noon (Madhyāhna), twilight (Sandhyā), and Tithi transitions are purely geographic. 
+            A person in New York experiences sunrise hours away from someone in Ujjain or London. 
+            Your location is processed <strong>strictly on-device</strong> using local mathematics and is never uploaded, tracked, or shared.
+          </p>
+        </div>
+
+        <!-- FAQ 5 -->
+        <div class="glass-panel faq-item">
+          <h3>How can I cancel an Annual Seeker Patronage subscription?</h3>
+          <p>
+            Subscriptions are managed securely by Apple. To cancel or modify your patronage:
+            Open your device's <strong>Settings</strong> -> Tap your <strong>Apple ID Name</strong> -> 
+            Tap <strong>Subscriptions</strong> -> Select <strong>Muhūrta</strong> -> Tap <strong>Cancel Subscription</strong>.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .support-page {
+    padding: 60px 0 100px;
+  }
+
+  .support-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 56px;
+  }
+
+  .support-header h1 {
+    font-size: 2.8rem;
+    margin: 14px 0 16px;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .support-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    margin-bottom: 72px;
+  }
+
+  .help-card {
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-icon {
+    font-size: 2.2rem;
+    margin-bottom: 16px;
+  }
+
+  .help-card h3 {
+    font-size: 1.35rem;
+    margin-bottom: 12px;
+    color: #ffffff;
+  }
+
+  .help-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 28px;
+    flex: 1;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .contact-sub {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  /* FAQ */
+  .faq-section h2 {
+    font-size: 2.2rem;
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    padding: 28px 32px;
+  }
+
+  .faq-item h3 {
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+    color: var(--gold-light);
+  }
+
+  .faq-item p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .faq-bullets {
+    margin-top: 12px;
+    margin-bottom: 0;
+    padding-left: 20px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  @media (max-width: 768px) {
+    .support-grid {
+      grid-template-columns: 1fr;
+    }
+    .support-header h1 {
+      font-size: 2.2rem;
+    }
+  }
+</style>

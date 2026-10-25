@@ -36,6 +36,7 @@ public struct DakshinaTier: Identifiable, Sendable {
 public struct SupportSanctuaryView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
+    @ObservedObject var storeManager = StoreKitManager.shared
     
     @State private var selectedTier: DakshinaTier? = nil
     @State private var showingThankYouAlert = false
@@ -47,7 +48,7 @@ public struct SupportSanctuaryView: View {
     
     public static let tiers: [DakshinaTier] = [
         DakshinaTier(
-            id: "com.shindeaditya.Muhurta.tip.dipa",
+            id: StoreKitManager.dipaID,
             emoji: "🪔",
             title: "Dīpa Offering",
             sanskritTitle: "दीप समर्पण",
@@ -56,7 +57,7 @@ public struct SupportSanctuaryView: View {
             description: "A gentle flame honoring daily sacred solar calculations."
         ),
         DakshinaTier(
-            id: "com.shindeaditya.Muhurta.tip.pushpa",
+            id: StoreKitManager.pushpaID,
             emoji: "🌸",
             title: "Puṣpa Offering",
             sanskritTitle: "पुष्प समर्पण",
@@ -66,7 +67,7 @@ public struct SupportSanctuaryView: View {
             isPopular: true
         ),
         DakshinaTier(
-            id: "com.shindeaditya.Muhurta.tip.annual",
+            id: StoreKitManager.annualID,
             emoji: "✨",
             title: "Annual Seeker Patron",
             sanskritTitle: "वार्षिक सेवा",
@@ -75,7 +76,7 @@ public struct SupportSanctuaryView: View {
             description: "Continuous year-round patronage sustaining open Vedic research."
         ),
         DakshinaTier(
-            id: "com.shindeaditya.Muhurta.tip.archana",
+            id: StoreKitManager.archanaID,
             emoji: "🥥",
             title: "Archana Patron",
             sanskritTitle: "अर्चना सेवा",
@@ -84,7 +85,7 @@ public struct SupportSanctuaryView: View {
             description: "A profound traditional Vedic offering powering astronomical precision."
         ),
         DakshinaTier(
-            id: "com.shindeaditya.Muhurta.tip.benefactor",
+            id: StoreKitManager.benefactorID,
             emoji: "🛕",
             title: "Temple Benefactor",
             sanskritTitle: "महा संरक्षक",
@@ -98,27 +99,28 @@ public struct SupportSanctuaryView: View {
     
     public var body: some View {
         NavigationStack {
-            ZStack {
-                Color(red: 0.05, green: 0.06, blue: 0.08).ignoresSafeArea()
-                
-                ScrollView {
-                    VStack(spacing: 22) {
-                        // Hero Banner
-                        heroBanner
-                        
-                        // Pillar 1: Support with Code (Open Source)
-                        codeContributionCard
-                        
-                        // Pillar 2: Support with Funds (Sacred Dakṣiṇā)
-                        fundsSection
-                        
-                        // Restore Purchases & Apple Compliance Note
-                        footerCompliance
-                            .padding(.bottom, 40)
-                    }
-                    .padding(20)
+            ScrollView {
+                VStack(spacing: 22) {
+                    // Hero Banner
+                    heroBanner
+                    
+                    // Pillar 1: Support with Code (Open Source)
+                    codeContributionCard
+                    
+                    // Pillar 2: Support with Funds (Sacred Dakṣiṇā)
+                    fundsSection
+                    
+                    // Restore Purchases & Apple Compliance Note
+                    footerCompliance
+                        .padding(.bottom, 36)
                 }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 16)
+                .frame(maxWidth: .infinity)
             }
+            .background(Color(red: 0.05, green: 0.06, blue: 0.08).ignoresSafeArea())
+            .toolbarBackground(Color(red: 0.05, green: 0.06, blue: 0.08), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .navigationTitle("Contribute & Seva")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -131,9 +133,12 @@ public struct SupportSanctuaryView: View {
                 }
             }
             .alert("कृतज्ञता • Gratitude", isPresented: $showingThankYouAlert) {
-                Button("ॐ तत्सत् (Amen)", role: .cancel) {}
+                Button("ॐ तत्सत्", role: .cancel) {}
             } message: {
                 Text(thankYouMessage)
+            }
+            .task {
+                await storeManager.loadProducts()
             }
         }
     }
@@ -333,13 +338,21 @@ public struct SupportSanctuaryView: View {
                 Spacer()
                 
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text(tier.priceString)
-                        .font(.system(size: 14, weight: .bold, design: .rounded))
-                        .foregroundColor(gold)
-                    Text(tier.cadence)
-                        .font(.system(size: 9))
-                        .foregroundColor(.secondary)
+                    if isProcessing && selectedTier?.id == tier.id {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: gold))
+                            .scaleEffect(0.8)
+                            .frame(height: 24)
+                    } else {
+                        Text(displayPrice(for: tier))
+                            .font(.system(size: 14, weight: .bold, design: .rounded))
+                            .foregroundColor(gold)
+                        Text(tier.cadence)
+                            .font(.system(size: 9))
+                            .foregroundColor(.secondary)
+                    }
                 }
+                .frame(minWidth: 72, alignment: .trailing)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
                 .background(gold.opacity(0.12))
@@ -354,6 +367,7 @@ public struct SupportSanctuaryView: View {
             )
         }
         .buttonStyle(.plain)
+        .disabled(isProcessing)
     }
     
     // MARK: - 5. Footer & Compliance
@@ -362,10 +376,17 @@ public struct SupportSanctuaryView: View {
         VStack(spacing: 8) {
             Button {
                 Task {
-                    try? await AppStore.sync()
-                    await MainActor.run {
-                        thankYouMessage = "Your previous voluntary offerings have been refreshed."
-                        showingThankYouAlert = true
+                    do {
+                        try await storeManager.restorePurchases()
+                        await MainActor.run {
+                            thankYouMessage = "Your previous voluntary offerings and subscriptions have been refreshed."
+                            showingThankYouAlert = true
+                        }
+                    } catch {
+                        await MainActor.run {
+                            thankYouMessage = "Could not restore purchases: \(error.localizedDescription)"
+                            showingThankYouAlert = true
+                        }
                     }
                 }
             } label: {
@@ -382,18 +403,44 @@ public struct SupportSanctuaryView: View {
         }
     }
     
-    // MARK: - Action Handler
+    // MARK: - Action Handler & Price Helper
+    
+    private func displayPrice(for tier: DakshinaTier) -> String {
+        if let product = storeManager.products.first(where: { $0.id == tier.id }) {
+            if product.type == .autoRenewable {
+                return "\(product.displayPrice)/yr"
+            }
+            return product.displayPrice
+        }
+        return tier.priceString
+    }
     
     private func makeOffering(for tier: DakshinaTier) {
-        let generator = UINotificationFeedbackGenerator()
-        generator.notificationOccurred(.success)
-        
-        thankYouMessage = """
-        ॐ तत्सत्। धन्यवादः 🙏
-        
-        Thank you for offering the \(tier.title) (\(tier.priceString)).
-        Your sacred support keeps Muhūrta ad-free, authentic, and open-source for seekers worldwide.
-        """
-        showingThankYouAlert = true
+        selectedTier = tier
+        Task {
+            isProcessing = true
+            defer { isProcessing = false }
+            
+            do {
+                let purchased = try await storeManager.purchase(productID: tier.id)
+                if purchased {
+                    let generator = UINotificationFeedbackGenerator()
+                    generator.notificationOccurred(.success)
+                    
+                    thankYouMessage = """
+                    ॐ तत्सत्। धन्यवादः 🙏
+                    
+                    Thank you for your sacred offering of \(tier.title) (\(displayPrice(for: tier))).
+                    Your support preserves open Vedic ephemeris algorithms and keeps Muhūrta 100% free and ad-free.
+                    """
+                    showingThankYouAlert = true
+                }
+            } catch {
+                let generator = UINotificationFeedbackGenerator()
+                generator.notificationOccurred(.error)
+                thankYouMessage = "Unable to process offering: \(error.localizedDescription)"
+                showingThankYouAlert = true
+            }
+        }
     }
 }
