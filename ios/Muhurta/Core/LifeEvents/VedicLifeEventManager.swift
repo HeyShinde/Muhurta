@@ -313,6 +313,15 @@ public final class VedicLifeEventManager: ObservableObject {
         }
     }
     
+    // MARK: - Local Data Cleanup
+    
+    /// Clears all local events from memory and UserDefaults when a user signs out.
+    public func clearAllLocalData() {
+        self.events = []
+        UserDefaults.standard.removeObject(forKey: userDefaultsKey)
+        print("VedicLifeEventManager: Cleared all local milestone data.")
+    }
+    
     // MARK: - Firestore Sync
     
     public func syncWithFirestore() async {

@@ -15,9 +15,11 @@ struct PersonalizationAuthView: View {
     
     @State private var email = ""
     @State private var password = ""
+    @State private var fullName = ""
     @State private var isSignUpMode = false
     @State private var showingError = false
     @State private var errorMessage = ""
+    @State private var showingVerificationNotice = false
     
     var onAuthenticated: (() -> Void)? = nil
     
@@ -83,6 +85,16 @@ struct PersonalizationAuthView: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(errorMessage)
+            }
+            .alert("Verify Your Email", isPresented: $showingVerificationNotice) {
+                Button("Continue") {
+                    let impact = UINotificationFeedbackGenerator()
+                    impact.notificationOccurred(.success)
+                    onAuthenticated?()
+                    dismiss()
+                }
+            } message: {
+                Text("Your sacred account has been created and a confirmation email has been dispatched to \(email). Please check your inbox and verify your email to protect your account.")
             }
         }
     }
@@ -160,8 +172,19 @@ struct PersonalizationAuthView: View {
             .padding(.bottom, 4)
             
             VStack(spacing: 10) {
+                if isSignUpMode {
+                    TextField("Full Name (e.g. Aditya Shinde)", text: $fullName)
+                        .textContentType(.name)
+                        .autocapitalization(.words)
+                        .padding(13)
+                        .background(Color.white.opacity(0.06))
+                        .cornerRadius(12)
+                        .foregroundColor(.white)
+                }
+                
                 TextField("Email address", text: $email)
                     .keyboardType(.emailAddress)
+                    .textContentType(.emailAddress)
                     .autocapitalization(.none)
                     .padding(13)
                     .background(Color.white.opacity(0.06))
@@ -169,6 +192,7 @@ struct PersonalizationAuthView: View {
                     .foregroundColor(.white)
                 
                 SecureField("Password (min 6 characters)", text: $password)
+                    .textContentType(isSignUpMode ? .newPassword : .password)
                     .padding(13)
                     .background(Color.white.opacity(0.06))
                     .cornerRadius(12)
@@ -193,8 +217,8 @@ struct PersonalizationAuthView: View {
                 .cornerRadius(12)
             }
             .buttonStyle(.plain)
-            .disabled(email.isEmpty || password.count < 6 || authService.isLoading)
-            .opacity((email.isEmpty || password.count < 6) ? 0.5 : 1.0)
+            .disabled(isSubmitDisabled)
+            .opacity(isSubmitDisabled ? 0.5 : 1.0)
         }
         .padding(16)
         .background(
@@ -254,6 +278,14 @@ struct PersonalizationAuthView: View {
         }
     }
     
+    private var isSubmitDisabled: Bool {
+        if isSignUpMode {
+            return fullName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || email.isEmpty || password.count < 6 || authService.isLoading
+        } else {
+            return email.isEmpty || password.count < 6 || authService.isLoading
+        }
+    }
+    
     // MARK: - Actions
     
     private func signInWithGoogleAction() {
@@ -275,14 +307,15 @@ struct PersonalizationAuthView: View {
         Task {
             do {
                 if isSignUpMode {
-                    try await authService.signUp(email: email, password: password)
+                    try await authService.signUp(email: email, password: password, fullName: fullName)
+                    showingVerificationNotice = true
                 } else {
                     try await authService.signIn(email: email, password: password)
+                    let impact = UINotificationFeedbackGenerator()
+                    impact.notificationOccurred(.success)
+                    onAuthenticated?()
+                    dismiss()
                 }
-                let impact = UINotificationFeedbackGenerator()
-                impact.notificationOccurred(.success)
-                onAuthenticated?()
-                dismiss()
             } catch {
                 errorMessage = error.localizedDescription
                 showingError = true

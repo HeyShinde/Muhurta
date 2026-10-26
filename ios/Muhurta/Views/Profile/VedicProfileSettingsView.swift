@@ -847,6 +847,17 @@ struct VedicProfileSettingsView: View {
                 .multilineTextAlignment(.center)
                 .foregroundColor(.white.opacity(0.45))
                 .lineSpacing(3)
+            
+            HStack(spacing: 12) {
+                Link("Privacy Policy", destination: URL(string: "https://muhurta.shindeaditya.com/privacy")!)
+                Text("•").foregroundColor(.white.opacity(0.3))
+                Link("Terms of Service", destination: URL(string: "https://muhurta.shindeaditya.com/terms")!)
+                Text("•").foregroundColor(.white.opacity(0.3))
+                Link("Support", destination: URL(string: "https://muhurta.shindeaditya.com/support")!)
+            }
+            .font(.system(size: 11, weight: .medium))
+            .foregroundColor(gold.opacity(0.75))
+            .padding(.top, 4)
         }
         .padding(.horizontal, 10)
     }
@@ -939,193 +950,43 @@ struct AccountManagementSheet: View {
     @State private var isSyncingCloud: Bool = false
     @State private var syncSuccess: Bool = false
     @State private var showingSignOutAlert: Bool = false
+    @State private var showingDeleteAccountAlert: Bool = false
+    @State private var isDeletingAccount: Bool = false
+    @State private var isSendingVerification: Bool = false
+    @State private var showingVerificationAlert: Bool = false
+    @State private var verificationAlertMessage: String = ""
+    @State private var showingEditNameAlert: Bool = false
+    @State private var editingName: String = ""
     
     private let gold = Color(red: 0.94, green: 0.76, blue: 0.42)
     
+    private var providerTitle: String {
+        if authService.isAnonymous { return "Guest Session" }
+        if let first = authService.user?.providerData.first {
+            if first.providerID == "google.com" { return "Google" }
+            if first.providerID == "password" { return "Email & Password" }
+            return first.providerID
+        }
+        return "Email & Password"
+    }
+    
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(red: 0.06, green: 0.07, blue: 0.10).ignoresSafeArea()
-                
+            VStack(spacing: 0) {
                 ScrollView {
                     VStack(spacing: 22) {
-                        // User Avatar & Email
-                        VStack(spacing: 10) {
-                            ZStack {
-                                Circle()
-                                    .fill(
-                                        LinearGradient(
-                                            colors: [gold.opacity(0.3), gold.opacity(0.1)],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
-                                        )
-                                    )
-                                    .frame(width: 76, height: 76)
-                                    .overlay(Circle().stroke(gold.opacity(0.4), lineWidth: 1.5))
-                                
-                                if let photoURL = authService.photoURL {
-                                    AsyncImage(url: photoURL) { phase in
-                                        switch phase {
-                                        case .success(let image):
-                                            image
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 76, height: 76)
-                                                .clipShape(Circle())
-                                        default:
-                                            Image(systemName: "person.crop.circle.fill")
-                                                .font(.system(size: 48))
-                                                .foregroundColor(gold)
-                                        }
-                                    }
-                                } else {
-                                    Image(systemName: "person.crop.circle.fill")
-                                        .font(.system(size: 48))
-                                        .foregroundColor(gold)
-                                }
-                            }
-                            .padding(.top, 10)
-                            
-                            VStack(spacing: 4) {
-                                Text(authService.isAnonymous ? "Guest Seeker" : (authService.displayName ?? "Vedic Practitioner"))
-                                    .font(.system(size: 19, weight: .bold, design: .serif))
-                                    .foregroundColor(.white)
-                                
-                                Text(authService.user?.email ?? (authService.isAnonymous ? "Anonymous Cloud Session" : "Authenticated Seeker"))
-                                    .font(.system(size: 13))
-                                    .foregroundColor(.white.opacity(0.65))
-                            }
-                        }
-                        
-                        // Cloud Sync Status Card
-                        VStack(alignment: .leading, spacing: 14) {
-                            HStack {
-                                Image(systemName: "icloud.fill")
-                                    .foregroundColor(Color.cyan)
-                                    .font(.system(size: 16))
-                                Text("FIREBASE CLOUD SANCTUARY")
-                                    .font(.system(size: 11, weight: .bold, design: .rounded))
-                                    .foregroundColor(Color.cyan)
-                                Spacer()
-                                HStack(spacing: 5) {
-                                    Circle().fill(Color.green).frame(width: 6, height: 6)
-                                    Text("Connected")
-                                        .font(.system(size: 11, weight: .semibold))
-                                        .foregroundColor(Color.green)
-                                }
-                            }
-                            
-                            Text("Your consecrated birthdays, anniversaries, and sacred samskaras are backed up securely and synchronized in real time.")
-                                .font(.system(size: 12))
-                                .foregroundColor(.white.opacity(0.7))
-                                .lineSpacing(2)
-                            
-                            HStack {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text("\(lifeEventManager.events.count)")
-                                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                                        .foregroundColor(gold)
-                                    Text("Consecrated Milestones")
-                                        .font(.system(size: 11))
-                                        .foregroundColor(.white.opacity(0.6))
-                                }
-                                
-                                Spacer()
-                                
-                                Button {
-                                    Task {
-                                        isSyncingCloud = true
-                                        await lifeEventManager.syncWithFirestore()
-                                        isSyncingCloud = false
-                                        syncSuccess = true
-                                        try? await Task.sleep(nanoseconds: 2_000_000_000)
-                                        syncSuccess = false
-                                    }
-                                } label: {
-                                    HStack(spacing: 6) {
-                                        if isSyncingCloud {
-                                            ProgressView()
-                                                .tint(.black)
-                                                .scaleEffect(0.8)
-                                        } else {
-                                            Image(systemName: syncSuccess ? "checkmark.circle.fill" : "arrow.triangle.2.circlepath")
-                                        }
-                                        Text(syncSuccess ? "Synced!" : (isSyncingCloud ? "Syncing..." : "Sync Now"))
-                                    }
-                                    .font(.system(size: 12, weight: .bold, design: .rounded))
-                                    .foregroundColor(.black)
-                                    .padding(.horizontal, 14)
-                                    .padding(.vertical, 8)
-                                    .background(syncSuccess ? Color.green : gold)
-                                    .clipShape(Capsule())
-                                }
-                                .disabled(isSyncingCloud)
-                            }
-                        }
-                        .padding(18)
-                        .background(
-                            RoundedRectangle(cornerRadius: 18)
-                                .fill(Color(red: 0.08, green: 0.10, blue: 0.14))
-                                .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.white.opacity(0.08), lineWidth: 1))
-                        )
-                        
-                        // User Account ID & Metadata
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("ACCOUNT CREDENTIALS")
-                                .font(.system(size: 11, weight: .bold, design: .rounded))
-                                .foregroundColor(gold.opacity(0.8))
-                            
-                            HStack {
-                                Text("Auth Provider")
-                                    .font(.system(size: 13))
-                                    .foregroundColor(.white.opacity(0.7))
-                                Spacer()
-                                Text(authService.isAnonymous ? "Guest Session" : "Google")
-                                    .font(.system(size: 13, weight: .medium))
-                                    .foregroundColor(.white)
-                            }
-                            
-                            Divider().background(Color.white.opacity(0.08))
-                            
-                            HStack {
-                                Text("Seeker UID")
-                                    .font(.system(size: 13))
-                                    .foregroundColor(.white.opacity(0.7))
-                                Spacer()
-                                Text(authService.user?.uid.prefix(12).appending("...") ?? "—")
-                                    .font(.system(size: 12, design: .monospaced))
-                                    .foregroundColor(.white.opacity(0.6))
-                            }
-                        }
-                        .padding(16)
-                        .background(
-                            RoundedRectangle(cornerRadius: 18)
-                                .fill(Color(red: 0.08, green: 0.09, blue: 0.13))
-                                .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.white.opacity(0.06), lineWidth: 1))
-                        )
-                        
-                        // Sign Out Button
-                        Button(role: .destructive) {
-                            showingSignOutAlert = true
-                        } label: {
-                            HStack(spacing: 8) {
-                                Image(systemName: "rectangle.portrait.and.arrow.right")
-                                Text("Sign Out of Sanctuary")
-                            }
-                            .font(.system(size: 14, weight: .semibold, design: .rounded))
-                            .foregroundColor(.red.opacity(0.9))
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 14)
-                            .background(Color.red.opacity(0.12))
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
-                            .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.red.opacity(0.25), lineWidth: 1))
-                        }
-                        .padding(.top, 10)
+                        profileHeader
+                        cloudSyncCard
+                        credentialsCard
+                        actionButtons
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 12)
                 }
             }
+            .background(Color(red: 0.06, green: 0.07, blue: 0.10).ignoresSafeArea())
+            .toolbarBackground(Color(red: 0.06, green: 0.07, blue: 0.10), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .navigationTitle("Seeker Account")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -1145,6 +1006,320 @@ struct AccountManagementSheet: View {
             } message: {
                 Text("Your milestones will remain safely saved in the cloud. You can sign back in anytime to restore them.")
             }
+            .alert("Permanently Delete Account?", isPresented: $showingDeleteAccountAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Delete Everything", role: .destructive) {
+                    Task {
+                        isDeletingAccount = true
+                        try? await authService.deleteAccount()
+                        isDeletingAccount = false
+                        dismiss()
+                    }
+                }
+            } message: {
+                Text("This action cannot be undone. In accordance with Apple privacy standards, your account credentials, cloud backups, and synchronized history will be permanently deleted.")
+            }
+            .alert("Email Verification", isPresented: $showingVerificationAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(verificationAlertMessage)
+            }
+            .alert("Edit Display Name", isPresented: $showingEditNameAlert) {
+                TextField("Your Full Name", text: $editingName)
+                Button("Cancel", role: .cancel) { }
+                Button("Save") {
+                    Task {
+                        try? await authService.updateDisplayName(name: editingName)
+                    }
+                }
+            } message: {
+                Text("Enter your sacred or worldly name to personalize your Vedic calendar and blessings.")
+            }
+            .onAppear {
+                Task {
+                    await authService.reloadUser()
+                }
+            }
+        }
+    }
+    
+    // MARK: - Subviews
+    
+    private var profileHeader: some View {
+        VStack(spacing: 10) {
+            ZStack {
+                Circle()
+                    .fill(
+                        LinearGradient(
+                            colors: [gold.opacity(0.3), gold.opacity(0.1)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 76, height: 76)
+                    .overlay(Circle().stroke(gold.opacity(0.4), lineWidth: 1.5))
+                
+                if let photoURL = authService.photoURL {
+                    AsyncImage(url: photoURL) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 76, height: 76)
+                                .clipShape(Circle())
+                        default:
+                            Image(systemName: "person.crop.circle.fill")
+                                .font(.system(size: 48))
+                                .foregroundColor(gold)
+                        }
+                    }
+                } else {
+                    Image(systemName: "person.crop.circle.fill")
+                        .font(.system(size: 48))
+                        .foregroundColor(gold)
+                }
+            }
+            .padding(.top, 10)
+            
+            VStack(spacing: 4) {
+                HStack(spacing: 6) {
+                    Text(authService.isAnonymous ? "Guest Seeker" : (authService.displayName ?? "Vedic Practitioner"))
+                        .font(.system(size: 19, weight: .bold, design: .serif))
+                        .foregroundColor(.white)
+                    
+                    if !authService.isAnonymous {
+                        Button {
+                            editingName = authService.displayName ?? ""
+                            showingEditNameAlert = true
+                        } label: {
+                            Image(systemName: "pencil.circle.fill")
+                                .font(.system(size: 16))
+                                .foregroundColor(gold)
+                        }
+                    }
+                }
+                
+                Text(authService.user?.email ?? (authService.isAnonymous ? "Anonymous Cloud Session" : "Authenticated Seeker"))
+                    .font(.system(size: 13))
+                    .foregroundColor(.white.opacity(0.65))
+                
+                if !authService.isAnonymous {
+                    emailVerificationBadge
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var emailVerificationBadge: some View {
+        if authService.user?.isEmailVerified == true {
+            HStack(spacing: 4) {
+                Image(systemName: "checkmark.seal.fill")
+                    .foregroundColor(.green)
+                    .font(.system(size: 11))
+                Text("Email Verified")
+                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                    .foregroundColor(.green)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 3)
+            .background(Color.green.opacity(0.12))
+            .clipShape(Capsule())
+            .padding(.top, 2)
+        } else {
+            VStack(spacing: 6) {
+                HStack(spacing: 4) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundColor(.orange)
+                        .font(.system(size: 11))
+                    Text("Email Unverified")
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .foregroundColor(.orange)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 3)
+                .background(Color.orange.opacity(0.12))
+                .clipShape(Capsule())
+                
+                Button {
+                    Task {
+                        isSendingVerification = true
+                        do {
+                            try await authService.sendEmailVerification()
+                            verificationAlertMessage = "A verification link has been sent to \(authService.user?.email ?? "your email"). Please check your inbox."
+                            showingVerificationAlert = true
+                        } catch {
+                            verificationAlertMessage = error.localizedDescription
+                            showingVerificationAlert = true
+                        }
+                        isSendingVerification = false
+                    }
+                } label: {
+                    HStack(spacing: 5) {
+                        if isSendingVerification {
+                            ProgressView().tint(gold).scaleEffect(0.7)
+                        } else {
+                            Image(systemName: "envelope.badge")
+                                .font(.system(size: 11))
+                        }
+                        Text("Resend Verification Email")
+                            .font(.system(size: 11, weight: .bold, design: .rounded))
+                    }
+                    .foregroundColor(gold)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 5)
+                    .background(gold.opacity(0.12))
+                    .clipShape(Capsule())
+                }
+                .disabled(isSendingVerification)
+            }
+            .padding(.top, 4)
+        }
+    }
+    
+    private var cloudSyncCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                Image(systemName: "icloud.fill")
+                    .foregroundColor(Color.cyan)
+                    .font(.system(size: 16))
+                Text("FIREBASE CLOUD SANCTUARY")
+                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                    .foregroundColor(Color.cyan)
+                Spacer()
+                HStack(spacing: 5) {
+                    Circle().fill(Color.green).frame(width: 6, height: 6)
+                    Text("Connected")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(Color.green)
+                }
+            }
+            
+            Text("Your consecrated birthdays, anniversaries, and sacred samskaras are backed up securely and synchronized in real time.")
+                .font(.system(size: 12))
+                .foregroundColor(.white.opacity(0.7))
+                .lineSpacing(2)
+            
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("\(lifeEventManager.events.count)")
+                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                        .foregroundColor(gold)
+                    Text("Consecrated Milestones")
+                        .font(.system(size: 11))
+                        .foregroundColor(.white.opacity(0.6))
+                }
+                
+                Spacer()
+                
+                Button {
+                    Task {
+                        isSyncingCloud = true
+                        await lifeEventManager.syncWithFirestore()
+                        isSyncingCloud = false
+                        syncSuccess = true
+                        try? await Task.sleep(nanoseconds: 2_000_000_000)
+                        syncSuccess = false
+                    }
+                } label: {
+                    HStack(spacing: 6) {
+                        if isSyncingCloud {
+                            ProgressView()
+                                .tint(.black)
+                                .scaleEffect(0.8)
+                        } else {
+                            Image(systemName: syncSuccess ? "checkmark.circle.fill" : "arrow.triangle.2.circlepath")
+                        }
+                        Text(syncSuccess ? "Synced!" : (isSyncingCloud ? "Syncing..." : "Sync Now"))
+                    }
+                    .font(.system(size: 12, weight: .bold, design: .rounded))
+                    .foregroundColor(.black)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(syncSuccess ? Color.green : gold)
+                    .clipShape(Capsule())
+                }
+                .disabled(isSyncingCloud)
+            }
+        }
+        .padding(18)
+        .background(
+            RoundedRectangle(cornerRadius: 18)
+                .fill(Color(red: 0.08, green: 0.10, blue: 0.14))
+                .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.white.opacity(0.08), lineWidth: 1))
+        )
+    }
+    
+    private var credentialsCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("ACCOUNT CREDENTIALS")
+                .font(.system(size: 11, weight: .bold, design: .rounded))
+                .foregroundColor(gold.opacity(0.8))
+            
+            HStack {
+                Text("Auth Provider")
+                    .font(.system(size: 13))
+                    .foregroundColor(.white.opacity(0.7))
+                Spacer()
+                Text(providerTitle)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.white)
+            }
+            
+            Divider().background(Color.white.opacity(0.08))
+            
+            HStack {
+                Text("Seeker UID")
+                    .font(.system(size: 13))
+                    .foregroundColor(.white.opacity(0.7))
+                Spacer()
+                Text(authService.user?.uid.prefix(12).appending("...") ?? "—")
+                    .font(.system(size: 12, design: .monospaced))
+                    .foregroundColor(.white.opacity(0.6))
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 18)
+                .fill(Color(red: 0.08, green: 0.09, blue: 0.13))
+                .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.white.opacity(0.06), lineWidth: 1))
+        )
+    }
+    
+    private var actionButtons: some View {
+        VStack(spacing: 8) {
+            // Sign Out Button
+            Button(role: .destructive) {
+                showingSignOutAlert = true
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                    Text("Sign Out of Sanctuary")
+                }
+                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .foregroundColor(.red.opacity(0.9))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+                .background(Color.red.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.red.opacity(0.25), lineWidth: 1))
+            }
+            .padding(.top, 10)
+            
+            // Delete Account Option (App Store Review Guideline 5.1.1(v) Compliance)
+            Button(role: .destructive) {
+                showingDeleteAccountAlert = true
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "trash")
+                    Text("Delete Seeker Account & Cloud Data")
+                }
+                .font(.system(size: 12, weight: .medium))
+                .foregroundColor(.red.opacity(0.75))
+            }
+            .padding(.top, 6)
+            .padding(.bottom, 24)
         }
     }
 }

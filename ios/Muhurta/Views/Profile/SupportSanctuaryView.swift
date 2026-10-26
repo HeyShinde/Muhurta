@@ -400,6 +400,16 @@ public struct SupportSanctuaryView: View {
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 16)
+            
+            // App Store Review Guideline 3.1.2 Subscription Compliance Links
+            HStack(spacing: 12) {
+                Link("Privacy Policy", destination: URL(string: "https://muhurta.shindeaditya.com/privacy")!)
+                Text("•").foregroundColor(.secondary.opacity(0.6))
+                Link("Terms of Use (EULA)", destination: URL(string: "https://muhurta.shindeaditya.com/terms")!)
+            }
+            .font(.system(size: 11, weight: .medium))
+            .foregroundColor(gold.opacity(0.85))
+            .padding(.top, 4)
         }
     }
     
