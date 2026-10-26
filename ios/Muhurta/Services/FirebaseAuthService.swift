@@ -41,6 +41,14 @@ public final class FirebaseAuthService: ObservableObject {
     private func setupAuthListener() {
         authListenerHandle = Auth.auth().addStateDidChangeListener { [weak self] _, user in
             Task { @MainActor in
+                let previousUid = self?.user?.uid
+                let newUid = user?.uid
+                
+                // If user changed to a different account, wipe local state immediately
+                if let p = previousUid, let n = newUid, p != n {
+                    self?.clearLocalUserData()
+                }
+                
                 self?.user = user
                 self?.isAuthenticated = user != nil
                 self?.isAnonymous = user?.isAnonymous ?? false
@@ -91,6 +99,8 @@ public final class FirebaseAuthService: ObservableObject {
         errorMessage = nil
         defer { isLoading = false }
         
+        clearLocalUserData()
+        
         let provider = OAuthProvider(providerID: "google.com")
         provider.scopes = ["email", "profile"]
         provider.customParameters = [
@@ -133,6 +143,8 @@ public final class FirebaseAuthService: ObservableObject {
         errorMessage = nil
         defer { isLoading = false }
         
+        clearLocalUserData()
+        
         do {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             self.user = result.user
@@ -150,6 +162,8 @@ public final class FirebaseAuthService: ObservableObject {
         isLoading = true
         errorMessage = nil
         defer { isLoading = false }
+        
+        clearLocalUserData()
         
         do {
             let result = try await Auth.auth().createUser(withEmail: email, password: password)

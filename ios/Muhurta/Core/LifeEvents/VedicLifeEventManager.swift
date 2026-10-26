@@ -149,20 +149,23 @@ public final class VedicLifeEventManager: ObservableObject {
     @Published public var isSyncing: Bool = false
     @Published public var errorMessage: String?
     
-    private let userDefaultsKey = "com.muhurta.savedLifeEvents"
+    private func userDefaultsKey(for uid: String) -> String {
+        "com.muhurta.savedLifeEvents.\(uid)"
+    }
     private let db = Firestore.firestore()
     private let ujjainCoordinate = CLLocationCoordinate2D(latitude: 23.1765, longitude: 75.7885)
     
     private init() {
-        loadLocalEvents()
-        // Purge dummy sample events so user starts with clean empty sanctuary
-        let hadDummy = events.contains { $0.title.contains("My Vedic Janmadina") && $0.personName == "Self" }
-        if hadDummy {
-            events.removeAll { $0.title.contains("My Vedic Janmadina") && $0.personName == "Self" }
-            saveLocalEvents()
-        }
-        Task {
-            await syncWithFirestore()
+        // Clean legacy un-scoped cache if any
+        UserDefaults.standard.removeObject(forKey: "com.muhurta.savedLifeEvents")
+        
+        if let uid = Auth.auth().currentUser?.uid {
+            loadLocalEvents(for: uid)
+            Task {
+                await syncWithFirestore()
+            }
+        } else {
+            self.events = []
         }
     }
     
@@ -260,13 +263,15 @@ public final class VedicLifeEventManager: ObservableObject {
     // MARK: - CRUD & Persistence
     
     public func addEvent(_ event: UserLifeEvent) {
-        var mutableEvent = event
-        if let currentUid = Auth.auth().currentUser?.uid {
-            mutableEvent.userId = currentUid
+        guard let currentUid = Auth.auth().currentUser?.uid else {
+            print("Cannot add event: No authenticated seeker.")
+            return
         }
+        var mutableEvent = event
+        mutableEvent.userId = currentUid
         events.append(mutableEvent)
         events.sort { $0.createdAt > $1.createdAt }
-        saveLocalEvents()
+        saveLocalEvents(for: currentUid)
         
         Task {
             await syncEventToFirestore(mutableEvent)
@@ -274,17 +279,16 @@ public final class VedicLifeEventManager: ObservableObject {
     }
     
     public func updateEvent(_ event: UserLifeEvent) {
+        guard let currentUid = Auth.auth().currentUser?.uid else { return }
         var mutableEvent = event
-        if let currentUid = Auth.auth().currentUser?.uid {
-            mutableEvent.userId = currentUid
-        }
+        mutableEvent.userId = currentUid
         if let idx = events.firstIndex(where: { $0.id == event.id }) {
             events[idx] = mutableEvent
         } else {
             events.append(mutableEvent)
         }
         events.sort { $0.createdAt > $1.createdAt }
-        saveLocalEvents()
+        saveLocalEvents(for: currentUid)
         
         Task {
             await syncEventToFirestore(mutableEvent)
@@ -292,24 +296,29 @@ public final class VedicLifeEventManager: ObservableObject {
     }
     
     public func deleteEvent(id: String) {
+        guard let currentUid = Auth.auth().currentUser?.uid else { return }
         events.removeAll { $0.id == id }
-        saveLocalEvents()
+        saveLocalEvents(for: currentUid)
         
         Task {
             await deleteEventFromFirestore(id: id)
         }
     }
     
-    private func saveLocalEvents() {
+    private func saveLocalEvents(for uid: String) {
+        let key = userDefaultsKey(for: uid)
         if let encoded = try? JSONEncoder().encode(events) {
-            UserDefaults.standard.set(encoded, forKey: userDefaultsKey)
+            UserDefaults.standard.set(encoded, forKey: key)
         }
     }
     
-    private func loadLocalEvents() {
-        if let data = UserDefaults.standard.data(forKey: userDefaultsKey),
+    private func loadLocalEvents(for uid: String) {
+        let key = userDefaultsKey(for: uid)
+        if let data = UserDefaults.standard.data(forKey: key),
             let decoded = try? JSONDecoder().decode([UserLifeEvent].self, from: data) {
             self.events = decoded
+        } else {
+            self.events = []
         }
     }
     
@@ -318,7 +327,12 @@ public final class VedicLifeEventManager: ObservableObject {
     /// Clears all local events from memory and UserDefaults when a user signs out.
     public func clearAllLocalData() {
         self.events = []
-        UserDefaults.standard.removeObject(forKey: userDefaultsKey)
+        let defaults = UserDefaults.standard
+        defaults.removeObject(forKey: "com.muhurta.savedLifeEvents")
+        let allKeys = defaults.dictionaryRepresentation().keys
+        for k in allKeys where k.hasPrefix("com.muhurta.savedLifeEvents") {
+            defaults.removeObject(forKey: k)
+        }
         print("VedicLifeEventManager: Cleared all local milestone data.")
     }
     
@@ -326,7 +340,8 @@ public final class VedicLifeEventManager: ObservableObject {
     
     public func syncWithFirestore() async {
         guard let user = Auth.auth().currentUser else {
-            print("Firestore sync: Not signed in. Skipping cloud sync.")
+            print("Firestore sync: Not signed in. Clearing in-memory events.")
+            self.events = []
             return
         }
         let uid = user.uid
@@ -345,7 +360,7 @@ public final class VedicLifeEventManager: ObservableObject {
             try await userDocRef.setData(userPayload, merge: true)
             print("Firestore: User document synced for \(uid)")
             
-            // 2. Fetch remote milestones
+            // 2. Fetch remote milestones strictly from this user's cloud document
             let snapshot = try await userDocRef.collection("life_events").getDocuments()
             var cloudEvents: [UserLifeEvent] = []
             
@@ -357,23 +372,13 @@ public final class VedicLifeEventManager: ObservableObject {
                 }
             }
             
-            if !cloudEvents.isEmpty {
-                // Merge cloud and local
-                var merged = self.events
-                for cloudEvent in cloudEvents {
-                    if !merged.contains(where: { $0.id == cloudEvent.id }) {
-                        merged.append(cloudEvent)
-                    }
-                }
-                self.events = merged
-                saveLocalEvents()
-            } else {
-                // Push local events to cloud
-                for event in self.events {
-                    await syncEventToFirestore(event)
-                }
-            }
-            print("Firestore: Sync completed successfully. Total events: \(self.events.count)")
+            cloudEvents.sort { $0.createdAt > $1.createdAt }
+            
+            // STRICT ISOLATION: Set events strictly from Firebase cloud.
+            // DO NOT merge previous local events or other accounts into this user!
+            self.events = cloudEvents
+            saveLocalEvents(for: uid)
+            print("Firestore: Loaded \(cloudEvents.count) remote events for seeker \(uid)")
         } catch {
             print("Firestore sync error: \(error.localizedDescription)")
             self.errorMessage = error.localizedDescription
