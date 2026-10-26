@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import FirebaseAuth
 import FirebaseFirestore
+import GoogleSignIn
 import Combine
 
 @MainActor
@@ -91,9 +92,25 @@ public final class FirebaseAuthService: ObservableObject {
         return nil
     }
     
+    // MARK: - Presentation Helper
+    
+    private func getTopViewController() -> UIViewController? {
+        guard let windowScene = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first(where: { $0.activationState == .foregroundActive }) ?? UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first else {
+            return nil
+        }
+        guard let window = windowScene.windows.first(where: { $0.isKeyWindow }) ?? windowScene.windows.first else {
+            return nil
+        }
+        var topController = window.rootViewController
+        while let presented = topController?.presentedViewController {
+            topController = presented
+        }
+        return topController
+    }
+    
     // MARK: - Authentication Actions
     
-    /// Signs in using Google OAuth via Firebase OAuthProvider.
+    /// Signs in natively using Google Sign-In SDK and links with Firebase Authentication.
     public func signInWithGoogle() async throws {
         isLoading = true
         errorMessage = nil
@@ -101,20 +118,48 @@ public final class FirebaseAuthService: ObservableObject {
         
         clearLocalUserData()
         
-        let provider = OAuthProvider(providerID: "google.com")
-        provider.scopes = ["email", "profile"]
-        provider.customParameters = [
-            "prompt": "select_account"
-        ]
+        guard let presentingVC = getTopViewController() else {
+            let err = NSError(domain: "FirebaseAuthService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unable to find active screen for Google Sign In."])
+            self.errorMessage = err.localizedDescription
+            throw err
+        }
         
         do {
-            let credential = try await provider.credential(with: nil)
-            let result = try await Auth.auth().signIn(with: credential)
-            try? await result.user.reload()
-            self.user = Auth.auth().currentUser ?? result.user
+            let signInResult = try await GIDSignIn.sharedInstance.signIn(withPresenting: presentingVC)
+            guard let idToken = signInResult.user.idToken?.tokenString else {
+                let err = NSError(domain: "FirebaseAuthService", code: -2, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve Google authentication token."])
+                self.errorMessage = err.localizedDescription
+                throw err
+            }
+            
+            let accessToken = signInResult.user.accessToken.tokenString
+            let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
+            
+            let authResult = try await Auth.auth().signIn(with: credential)
+            
+            // Sync user display name if available from Google
+            if let googleName = signInResult.user.profile?.name, !googleName.trimmingCharacters(in: .whitespaces).isEmpty {
+                if authResult.user.displayName == nil || authResult.user.displayName?.isEmpty == true {
+                    let req = authResult.user.createProfileChangeRequest()
+                    req.displayName = googleName
+                    try? await req.commitChanges()
+                }
+                UserDefaults.standard.set(googleName, forKey: "vedic_seeker_name")
+            }
+            
+            try? await authResult.user.reload()
+            self.user = Auth.auth().currentUser ?? authResult.user
             self.isAuthenticated = true
             self.isAnonymous = false
-        } catch {
+            
+            // Sync remote cloud data for this authenticated seeker
+            await VedicLifeEventManager.shared.syncWithFirestore()
+        } catch let error as NSError {
+            // User cancelled/dismissed Google prompt intentionally
+            if error.domain == kGIDSignInErrorDomain && error.code == GIDSignInError.canceled.rawValue {
+                print("Google Sign In: User cancelled sheet.")
+                throw error
+            }
             self.errorMessage = error.localizedDescription
             throw error
         }

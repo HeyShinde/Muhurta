@@ -8,6 +8,7 @@
 
 import SwiftUI
 import FirebaseAuth
+import GoogleSignIn
 
 struct PersonalizationAuthView: View {
     @Environment(\.dismiss) private var dismiss
@@ -20,6 +21,7 @@ struct PersonalizationAuthView: View {
     @State private var showingError = false
     @State private var errorMessage = ""
     @State private var showingVerificationNotice = false
+    @State private var isSigningInWithGoogle = false
     
     var onAuthenticated: (() -> Void)? = nil
     
@@ -141,23 +143,36 @@ struct PersonalizationAuthView: View {
             signInWithGoogleAction()
         } label: {
             HStack(spacing: 12) {
-                // Actual official Google 4-color G logo
-                Image("GoogleLogo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 22, height: 22)
+                if isSigningInWithGoogle {
+                    ProgressView()
+                        .tint(Color(red: 0.12, green: 0.13, blue: 0.15))
+                        .scaleEffect(0.9)
+                } else {
+                    Image("GoogleLogo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20, height: 20)
+                }
                 
-                Text("Continue with Google")
-                    .font(.system(size: 15, weight: .bold, design: .rounded))
-                    .foregroundColor(.black)
+                Text(isSigningInWithGoogle ? "Signing In with Google..." : "Continue with Google")
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .foregroundColor(Color(red: 0.12, green: 0.13, blue: 0.15))
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 14)
-            .background(Color.white)
-            .cornerRadius(14)
-            .shadow(color: Color.white.opacity(0.12), radius: 10, y: 3)
+            .background(
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(Color.white)
+                    .shadow(color: Color.black.opacity(0.18), radius: 8, y: 3)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .stroke(Color.white.opacity(0.35), lineWidth: 0.8)
+            )
         }
-        .buttonStyle(.plain)
+        .buttonStyle(GoogleButtonPressStyle())
+        .disabled(authService.isLoading || isSigningInWithGoogle)
+        .opacity((authService.isLoading || isSigningInWithGoogle) ? 0.75 : 1.0)
     }
     
     // MARK: - Email Auth Card
@@ -290,13 +305,20 @@ struct PersonalizationAuthView: View {
     
     private func signInWithGoogleAction() {
         Task {
+            isSigningInWithGoogle = true
+            defer { isSigningInWithGoogle = false }
             do {
                 try await authService.signInWithGoogle()
                 let impact = UINotificationFeedbackGenerator()
                 impact.notificationOccurred(.success)
                 onAuthenticated?()
                 dismiss()
-            } catch {
+            } catch let error as NSError {
+                // If user tapped cancel/close on the Google sheet, dismiss silently without alert
+                if error.domain == kGIDSignInErrorDomain && error.code == GIDSignInError.canceled.rawValue {
+                    print("Google Sign In sheet dismissed by seeker.")
+                    return
+                }
                 errorMessage = error.localizedDescription
                 showingError = true
             }
@@ -321,5 +343,15 @@ struct PersonalizationAuthView: View {
                 showingError = true
             }
         }
+    }
+}
+
+// MARK: - Google Button Press Animation
+
+private struct GoogleButtonPressStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
     }
 }
